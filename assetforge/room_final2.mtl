@@ -1,0 +1,17 @@
+# Created by Kenney (www.kenney.nl)
+
+newmtl stoneDark(Clone)
+Kd 0.403 0.39 0.594
+
+newmtl stoneLight(Clone)
+Kd 0.71 0.701 0.84
+
+newmtl metalLight(Clone)
+Kd 0.698 0.686 0.867
+
+newmtl metalGreen(Clone)
+Kd 0.047 0.847 0.624
+
+newmtl dark(Clone)
+Kd 0.224 0.235 0.275
+
