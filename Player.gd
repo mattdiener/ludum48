@@ -3,7 +3,7 @@ extends KinematicBody
 var moveSpeed = 3.0
 var velocity = Vector3.ZERO
 
-onready var nav_mesh = get_node("../Room/Navigation")
+onready var room_manager = get_node("../RoomManager")
 
 func get_input():
 	var input = Vector3.ZERO
@@ -33,7 +33,9 @@ func _physics_process(delta):
 	
 	move_and_collide(velocity * delta)
 
-	translation = nav_mesh.get_closest_point(translation)
+	var nav_mesh = room_manager.get_active_navmesh()
+	if nav_mesh:
+		translation = nav_mesh.get_closest_point(translation)
 
 
 # Declare member variables here. Examples:

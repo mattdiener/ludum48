@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://res/room2.obj" type="ArrayMesh" id=1]
+
+[sub_resource type="NavigationMesh" id=1]
+vertices = PoolVector3Array( 0.600069, 0.2, 11.7002, 2.10007, 0.2, 11.4002, 2.70007, 0.2, 10.8002, 2.70007, 0.2, 6.90015, 1.80007, 0.2, 6.60015, 0.600069, 0.2, 8.40015, 0.300069, 0.2, 18.3002, 0.300069, 0.2, 19.8002, 0.900069, 0.2, 19.8002, 1.20007, 0.2, 18.9002, 1.20007, 0.2, 18.0002, 1.50007, 0.2, 4.80015, 2.70007, 0.2, 4.80015, 2.70007, 0.2, 0.300153, 0.300069, 0.2, 0.300153, 0.600069, 0.2, 8.40015, 0.300069, 0.2, 16.5002, 0.600069, 0.2, 11.7002, 7.80007, 0.2, 13.8002, 7.80007, 0.2, 13.2002, 6.90007, 0.2, 12.9002, 6.90007, 0.2, 12.0002, 7.80007, 0.2, 11.7002, 7.80007, 0.2, 11.1002, 5.10007, 0.2, 11.1002, 5.10007, 0.2, 12.3002, 3.90007, 0.2, 11.1002, 2.70007, 0.2, 10.8002, 2.10007, 0.2, 11.4002, 2.40007, 0.2, 13.2002, 3.90007, 0.2, 12.3002, 1.50007, 0.2, 4.80015, 0.300069, 0.2, 0.300153, 0.600069, 0.2, 8.40015, 1.80007, 0.2, 6.60015, 0.900069, 0.2, 13.5002, 0.600069, 0.2, 11.7002, 0.300069, 0.2, 16.5002, 1.20007, 0.2, 16.8002, 6.90007, 0.2, 12.9002, 6.90007, 0.2, 12.0002, 5.10007, 0.2, 12.3002, 3.00007, 0.2, 13.8002, 2.40007, 0.2, 13.2002, 0.900069, 0.2, 13.5002, 1.20007, 0.2, 16.8002, 2.70007, 0.2, 19.8002, 2.92507, 0.3, 15.3002, 1.20007, 0.2, 16.8002, 1.20007, 0.2, 18.0002, 2.70007, 0.2, 19.8002, 1.20007, 0.2, 18.0002, 1.20007, 0.2, 18.9002, 2.70007, 0.2, 19.8002, 5.10007, 0.2, 12.3002, 3.90007, 0.2, 12.3002, 2.40007, 0.2, 13.2002, 3.00007, 0.2, 13.8002, 7.80007, 0.2, 13.8002, 6.90007, 0.2, 12.9002 )
+polygons = [ PoolIntArray( 1, 0, 2 ), PoolIntArray( 2, 0, 5 ), PoolIntArray( 2, 5, 4 ), PoolIntArray( 2, 4, 3 ), PoolIntArray( 8, 7, 9 ), PoolIntArray( 9, 7, 6 ), PoolIntArray( 9, 6, 10 ), PoolIntArray( 12, 11, 13 ), PoolIntArray( 13, 11, 14 ), PoolIntArray( 17, 16, 15 ), PoolIntArray( 20, 19, 18 ), PoolIntArray( 22, 21, 23 ), PoolIntArray( 23, 21, 24 ), PoolIntArray( 24, 21, 25 ), PoolIntArray( 27, 26, 28 ), PoolIntArray( 28, 26, 30 ), PoolIntArray( 28, 30, 29 ), PoolIntArray( 34, 33, 31 ), PoolIntArray( 31, 33, 32 ), PoolIntArray( 38, 37, 35 ), PoolIntArray( 35, 37, 36 ), PoolIntArray( 41, 40, 39 ), PoolIntArray( 43, 42, 44 ), PoolIntArray( 44, 42, 47 ), PoolIntArray( 44, 47, 45 ), PoolIntArray( 45, 47, 46 ), PoolIntArray( 50, 49, 48 ), PoolIntArray( 53, 52, 51 ), PoolIntArray( 56, 55, 57 ), PoolIntArray( 57, 55, 54 ), PoolIntArray( 57, 54, 59 ), PoolIntArray( 57, 59, 58 ) ]
+cell/height = 0.1
+agent/height = 0.1
+agent/radius = 0.1
+agent/max_climb = 0.1
+
+[node name="Room" type="Spatial"]
+
+[node name="Navigation" type="Navigation" parent="."]
+
+[node name="NavigationMeshInstance" type="NavigationMeshInstance" parent="Navigation"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0280032, 0, 0.0214462 )
+navmesh = SubResource( 1 )
+
+[node name="RoomMesh" type="MeshInstance" parent="Navigation/NavigationMeshInstance"]
+mesh = ExtResource( 1 )
+material/0 = null
+material/1 = null
+material/2 = null
+material/3 = null
+material/4 = null
+material/5 = null
+material/6 = null
+material/7 = null
+material/8 = null
+material/9 = null
