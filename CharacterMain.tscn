@@ -6,7 +6,7 @@
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 2 )
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=25]
 resource_name = "CrouchIdle-loop"
 loop = true
 tracks/0/type = "transform"
@@ -1414,7 +1414,7 @@ material/0 = SubResource( 1 )
 [node name="AnimationPlayer" parent="." index="1"]
 autoplay = "Idle-loop"
 method_call_mode = 1
-anims/CrouchIdle-loop = SubResource( 2 )
+anims/CrouchIdle-loop = SubResource( 25 )
 anims/CrouchWalk-loop = SubResource( 3 )
 anims/Idle-loop = SubResource( 4 )
 anims/Run-loop = SubResource( 5 )

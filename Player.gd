@@ -107,7 +107,6 @@ func _physics_process(delta):
 		translation = nav_mesh.get_closest_point(translation)
 		
 	derive_animation_state()
-	print(character_animation.get("parameters/Transition/current"))
 
 
 # Declare member variables here. Examples:
@@ -118,7 +117,7 @@ func _physics_process(delta):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	character_animation.active = true
-	character_animation.set("parameters/Transition/current", "Idle")
+	character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
 	pass # Replace with function body.
 
 
