@@ -1,26 +1,55 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
+[ext_resource path="res://res/room1.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
 
 [sub_resource type="CapsuleMesh" id=1]
-radius = 0.5
+radius = 0.25
+mid_height = 0.66
 
 [sub_resource type="CapsuleShape" id=2]
-radius = 0.5
+radius = 0.25
+height = 0.66
 
 [node name="Main" type="Spatial"]
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( -4.37114e-08, -0.5, 0.866025, 0, 0.866025, 0.5, -1, 2.18557e-08, -3.78552e-08, 10, 10, 0 )
+transform = Transform( 0.707107, -0.40558, 0.579228, 0, 0.819152, 0.573577, -0.707107, -0.40558, 0.579228, 13, 10, 13 )
+projection = 1
+size = 16.0
 
 [node name="Player" type="KinematicBody" parent="."]
 script = ExtResource( 2 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Player"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.58, 0 )
 mesh = SubResource( 1 )
 material/0 = null
 
 [node name="CollisionShape" type="CollisionShape" parent="Player"]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1, 0 )
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.58, 0 )
 shape = SubResource( 2 )
+
+[node name="Room" type="MeshInstance" parent="."]
+mesh = ExtResource( 1 )
+material/0 = null
+material/1 = null
+material/2 = null
+material/3 = null
+material/4 = null
+material/5 = null
+material/6 = null
+material/7 = null
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Room"]
+transform = Transform( -0.743231, -0.133997, 0.655479, 0.541675, 0.454519, 0.707107, -0.392678, 0.8806, -0.26523, 0, 0, 0 )
+light_energy = 0.75
+shadow_enabled = true
+
+[node name="OmniLight" type="OmniLight" parent="Room"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.42096, 1.78884, 4.36016 )
+visible = false
+light_color = Color( 0.207843, 0.392157, 0.278431, 1 )
+light_energy = 0.1
+shadow_enabled = true
+omni_range = 8.0

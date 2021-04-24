@@ -1,6 +1,6 @@
 extends KinematicBody
 
-var moveSpeed = 13.0
+var moveSpeed = 4.0
 var velocity = Vector3.ZERO
 
 func get_input():
@@ -8,14 +8,18 @@ func get_input():
 	
 	if Input.is_action_pressed("move_forward"):
 		input.x -= 1
+		input.z -= 1
 	if Input.is_action_pressed("move_backward"):
 		input.x += 1
+		input.z += 1
 	if Input.is_action_pressed("move_left"):
+		input.x -= 1
 		input.z += 1
 	if Input.is_action_pressed("move_right"):
+		input.x += 1
 		input.z -= 1
 	
-	return input.normalized()
+	return input#.normalized()
 	
 
 func _physics_process(delta):	
