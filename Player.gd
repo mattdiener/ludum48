@@ -7,13 +7,13 @@ func get_input():
 	var input = Vector3.ZERO
 	
 	if Input.is_action_pressed("move_forward"):
-		input.z += 1
-	elif Input.is_action_pressed("move_backward"):
-		input.z -= 1
-	elif Input.is_action_pressed("move_left"):
-		input.x += 1
-	elif Input.is_action_pressed("move_right"):
 		input.x -= 1
+	if Input.is_action_pressed("move_backward"):
+		input.x += 1
+	if Input.is_action_pressed("move_left"):
+		input.z += 1
+	if Input.is_action_pressed("move_right"):
+		input.z -= 1
 	
 	return input.normalized()
 	
