@@ -1,5 +1,6 @@
 extends Spatial
 
+const ROOMS_DIR = "res://rooms"
 const FLOOR_HEIGHT = 0.75
 
 enum EntranceDirection {
@@ -10,15 +11,15 @@ enum EntranceDirection {
 
 onready var loaded_rooms = get_node("LoadedRooms")
 var active_room = null
+var room_scene_files = []
 
 func get_active_navmesh():
 	if not active_room:
 		return null
 	return active_room.get_node("Navigation")
 
-func load_room(room_path: String, parent_exit_position: Vector3, entrance_direction = EntranceDirection.NONE):
-	var room_resource = load(room_path)
-	var room_scene = room_resource.instance()
+func next_room(parent_exit_position: Vector3, entrance_direction = EntranceDirection.NONE):
+	var room_scene = random_room(entrance_direction)
 
 	var spawn_position = Vector3.ZERO
 
@@ -51,6 +52,25 @@ func set_active_room(new_active_room: Spatial):
 
 	active_room = new_active_room
 
+func random_room(entrance_direction):
+	var valid_room = false
+
+	while true:
+		var room_path = room_scene_files[randi() % len(room_scene_files)]
+		var room_resource = load(room_path)
+		var room_scene = room_resource.instance()
+
+		valid_room = (
+			entrance_direction == EntranceDirection.LEFT and room_scene.has_node("Entrance_Left")
+			or entrance_direction == EntranceDirection.RIGHT and room_scene.has_node("Entrance_Right")
+			or entrance_direction == EntranceDirection.NONE
+		)
+
+		if valid_room:
+			return room_scene
+		else:
+			room_scene.queue_free()
+
 func get_room_aabb(room: Spatial) -> AABB:
 	var mesh: MeshInstance = room.find_node("RoomMesh");
 	return mesh.get_aabb();
@@ -64,19 +84,23 @@ func right_of(parent_room: Spatial, exit_position: Vector3) -> Vector3:
 	return Vector3(aabb.size.x, -FLOOR_HEIGHT, exit_position.z)
 
 func _on_exit_left(exit_position: Vector3):
-	load_room(
-		"res://rooms/Room1.tscn",
-		exit_position,
-		EntranceDirection.RIGHT
-	)
+	var entrance_direction = EntranceDirection.RIGHT
+	next_room(exit_position, entrance_direction)
 
 func _on_exit_right(exit_position: Vector3):
-	load_room(
-		"res://rooms/Room1.tscn",
-		right_of(active_room, exit_position),
-		EntranceDirection.LEFT
-	)
+	var entrance_direction = EntranceDirection.LEFT
+	next_room(exit_position, entrance_direction)
 
 func _ready():
-	var room1 = load_room("res://rooms/Room1.tscn", Vector3.ZERO)
-	set_active_room(room1)
+	# Discover available rooms
+	var dir = Directory.new()
+	dir.open(ROOMS_DIR)
+	dir.list_dir_begin(true)
+
+	while true:
+		var room_scene_file = dir.get_next()
+		if not room_scene_file:
+			break
+		room_scene_files.push_back(ROOMS_DIR + "/" + room_scene_file)
+
+	set_active_room(next_room(Vector3.ZERO))

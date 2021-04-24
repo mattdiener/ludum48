@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://res/room3.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://scripts/Exit_Left.gd" type="Script" id=2]
+[ext_resource path="res://scripts/Exit_Right.gd" type="Script" id=3]
 
 [sub_resource type="NavigationMesh" id=1]
 vertices = PoolVector3Array( 11.1003, 0.2, 3.3, 12.0003, 0.2, 2.4, 11.4003, 0.2, 2.1, 10.8003, 0.2, 2.7, 0.30026, 0.2, 0.299999, 2.70026, 0.2, 1.5, 4.20026, 0.2, 1.5, 6.90026, 0.2, 0.299999, 11.4003, 0.2, 0.899999, 12.6003, 0.2, 0.599999, 12.6003, 0.2, 0.299999, 9.30026, 0.2, 0.299999, 10.8003, 0.2, 2.7, 11.4003, 0.2, 2.1, 11.4003, 0.2, 0.899999, 9.30026, 0.2, 0.299999, 8.10026, 0.2, 1.5, 4.20026, 0.2, 1.5, 4.20026, 0.2, 2.7, 6.90026, 0.2, 1.5, 6.90026, 0.2, 0.299999, 0.30026, 0.2, 2.7, 2.70026, 0.2, 2.7, 2.70026, 0.2, 1.5, 0.30026, 0.2, 0.299999, 4.20026, 0.2, 2.7, 10.8003, 0.2, 2.7, 8.10026, 0.2, 1.5, 6.90026, 0.2, 1.5, 11.1003, 0.2, 7.5, 11.1003, 0.2, 8.7, 12.0003, 0.2, 8.1, 12.6003, 0.2, 0.299999, 12.6003, 0.2, 0.599999, 13.5003, 0.2, 0.899999, 18.6003, 0.2, 0.299999, 12.3003, 0.2, 6.9, 11.1003, 0.2, 7.5, 12.0003, 0.2, 8.1, 13.8003, 0.2, 8.7, 13.5003, 0.2, 2.1, 13.8003, 0.2, 3, 14.4003, 0.2, 2.4, 13.5003, 0.2, 0.899999, 13.5003, 0.2, 2.1, 12.0003, 0.2, 2.4, 11.1003, 0.2, 3.3, 12.3003, 0.2, 6, 13.8003, 0.2, 8.7, 13.8003, 0.2, 3, 11.1003, 0.2, 3.3, 11.1003, 0.2, 5.7, 12.3003, 0.2, 6, 12.3003, 0.2, 6, 12.3003, 0.2, 6.9, 13.8003, 0.2, 8.7, 15.3003, 0.3, 3, 18.6003, 0.2, 2.7, 18.0003, 0.2, 1.2, 13.5003, 0.2, 0.899999, 14.4003, 0.2, 2.4, 15.3003, 0.3, 3, 18.0003, 0.2, 1.2, 18.6003, 0.2, 0.299999 )
@@ -9,6 +11,12 @@ cell/height = 0.1
 agent/height = 0.1
 agent/radius = 0.1
 agent/max_climb = 0.1
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 1, 1, 0.736536 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 1, 1, 0.736536 )
 
 [node name="Room" type="Spatial"]
 
@@ -30,3 +38,22 @@ material/6 = null
 material/7 = null
 material/8 = null
 material/9 = null
+
+[node name="Exits" type="Node" parent="."]
+
+[node name="Exit_Left" type="Area" parent="Exits"]
+script = ExtResource( 2 )
+
+[node name="Shape" type="CollisionShape" parent="Exits/Exit_Left"]
+transform = Transform( 0.451861, 0, 0, 0, 1, 0, 0, 0, 1, 12.4499, 0.0101624, 8.77808 )
+shape = SubResource( 2 )
+
+[node name="Exit_Right" type="Area" parent="Exits"]
+script = ExtResource( 3 )
+
+[node name="Shape" type="CollisionShape" parent="Exits/Exit_Right"]
+transform = Transform( 0.536371, 0, 0, 0, 1, 0, 0, 0, 0.734118, 18.6069, 0, 1.53102 )
+shape = SubResource( 3 )
+
+[node name="Entrance_Left" type="Spatial" parent="."]
+transform = Transform( 0.536371, 0, 0, 0, 1, 0, 0, 0, 0.734118, 0, 0, 1.5 )

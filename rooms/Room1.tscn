@@ -35,10 +35,10 @@ material/7 = null
 
 [node name="Exits" type="Node" parent="."]
 
-[node name="Exit_Left1" type="Area" parent="Exits"]
+[node name="Exit_Left" type="Area" parent="Exits"]
 script = ExtResource( 2 )
 
-[node name="Shape" type="CollisionShape" parent="Exits/Exit_Left1"]
+[node name="Shape" type="CollisionShape" parent="Exits/Exit_Left"]
 transform = Transform( 0.451861, 0, 0, 0, 1, 0, 0, 0, 1, 5.51055, 0, 10.6305 )
 shape = SubResource( 2 )
 
