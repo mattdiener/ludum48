@@ -92,6 +92,8 @@ func _on_exit_right(exit_position: Vector3):
 	next_room(exit_position, entrance_direction)
 
 func _ready():
+	randomize()
+
 	# Discover available rooms
 	var dir = Directory.new()
 	dir.open(ROOMS_DIR)
