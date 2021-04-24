@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://CharacterMain.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Player.gd" type="Script" id=2]
 [ext_resource path="res://scripts/RoomManager.gd" type="Script" id=3]
+[ext_resource path="res://NPC.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CapsuleMesh" id=1]
 radius = 0.25
@@ -23,7 +24,7 @@ size = 16.0
 script = ExtResource( 2 )
 
 [node name="Character" parent="Player" instance=ExtResource( 1 )]
-transform = Transform( 0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, -0.212281, 0 )
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, -0.212281, 0 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Player"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.25, 0 )
@@ -44,3 +45,6 @@ script = ExtResource( 3 )
 transform = Transform( -0.743231, -0.133997, 0.655479, 0.541675, 0.45452, 0.707107, -0.392678, 0.8806, -0.26523, 0, 0, 0 )
 light_energy = 0.75
 shadow_enabled = true
+
+[node name="characterLargeMale" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.38582 )

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/astroMaleA.png-b5158fc82329365a7f2cddb95152c08e.s3tc.stex"
-path.etc2="res://.import/astroMaleA.png-b5158fc82329365a7f2cddb95152c08e.etc2.stex"
+path.s3tc="res://.import/alienA.png-7cb12dc50aff4e0810527ece0876c65e.s3tc.stex"
+path.etc2="res://.import/alienA.png-7cb12dc50aff4e0810527ece0876c65e.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://res/astroMaleA.png"
-dest_files=[ "res://.import/astroMaleA.png-b5158fc82329365a7f2cddb95152c08e.s3tc.stex", "res://.import/astroMaleA.png-b5158fc82329365a7f2cddb95152c08e.etc2.stex" ]
+source_file="res://res/texture/alienA.png"
+dest_files=[ "res://.import/alienA.png-7cb12dc50aff4e0810527ece0876c65e.s3tc.stex", "res://.import/alienA.png-7cb12dc50aff4e0810527ece0876c65e.etc2.stex" ]
 
 [params]
 
