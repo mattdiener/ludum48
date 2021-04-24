@@ -1,5 +1,6 @@
 extends KinematicBody
 
+var runMoveSpeed = 5.0
 var moveSpeed = 3.0
 var crouchMoveSpeed = 1.0
 var velocity = Vector3.ZERO
@@ -10,6 +11,7 @@ var crouching = false
 var wasCrouching = false
 var crouchFrames = 0
 var crouchTime = 0.416
+var running = false
 
 onready var room_manager = get_node("../RoomManager")
 onready var character_animation = get_node("Character/Animation")
@@ -48,11 +50,10 @@ func get_input():
 	moving = false;
 	if tmp_direction.x != 0 or tmp_direction.z != 0:
 		moving = true
-		direction = tmp_direction
+		direction = tmp_direction.normalized()
 		
-	crouching = false
-	if Input.is_action_pressed("crouch"):
-		crouching = true
+	crouching = Input.is_action_pressed("crouch")
+	running = Input.is_action_pressed("run")
 
 func handle_crouch(delta):
 	if not crouching:
@@ -96,6 +97,8 @@ func _physics_process(delta):
 		currentMoveSpeed = moveSpeed
 		if crouching:
 			currentMoveSpeed = crouchMoveSpeed
+		elif running:
+			currentMoveSpeed = runMoveSpeed
 	
 	velocity.x = dir.x * currentMoveSpeed
 	velocity.z = dir.z * currentMoveSpeed
@@ -108,19 +111,7 @@ func _physics_process(delta):
 		
 	derive_animation_state()
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	character_animation.active = true
 	character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
