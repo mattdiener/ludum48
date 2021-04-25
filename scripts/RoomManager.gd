@@ -3,7 +3,7 @@ extends Spatial
 const ROOMS_DIR = "res://rooms"
 const FLOOR_HEIGHT = 0.75
 
-signal room_loaded(prev_room, room)
+signal room_entered(prev_room, room, entrance_position)
 
 enum EntranceDirection {
 	NONE,
@@ -22,6 +22,7 @@ func get_active_navmesh():
 
 func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction = EntranceDirection.NONE):
 	var spawn_position = Vector3.ZERO
+	var entrance_position = Vector3.ZERO
 
 	# Line up exit and entrance
 	if parent_exit_position and entrance_direction != EntranceDirection.NONE:
@@ -33,14 +34,14 @@ func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction 
 			spawn_position = left_of(active_room, parent_exit_position)
 			entrance_node_name = "Entrance_Right"
 
-		var entrance_position = room.get_node(entrance_node_name).translation
+		entrance_position = room.get_node(entrance_node_name).translation
 		spawn_position -= entrance_position
 
 	room.translation = spawn_position
 	add_child_below_node(loaded_rooms, room)
-	set_active_room(room)
+	set_active_room(room, room.translation + entrance_position)
 
-func set_active_room(new_active_room: Spatial):
+func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 	if active_room:
 		for exit in active_room.get_node("Exits").get_children():
 			exit.queue_free()
@@ -49,7 +50,7 @@ func set_active_room(new_active_room: Spatial):
 		exit.connect("exited_left", self, "_on_exit_left")
 		exit.connect("exited_right", self, "_on_exit_right")
 
-	emit_signal("room_loaded", active_room, new_active_room)
+	emit_signal("room_entered", active_room, new_active_room, entrance_position)
 	active_room = new_active_room
 
 

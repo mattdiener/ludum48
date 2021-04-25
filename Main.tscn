@@ -41,6 +41,8 @@ material/0 = null
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.25, 0 )
 shape = SubResource( 2 )
 
+[node name="Tween" type="Tween" parent="Player"]
+
 [node name="RoomManager" type="Spatial" parent="."]
 script = ExtResource( 3 )
 

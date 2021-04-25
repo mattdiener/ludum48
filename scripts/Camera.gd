@@ -7,7 +7,7 @@ var UNITS_PER_SCALE = 11
 
 var base_size;
 
-func _on_room_loaded(prev_room: Spatial, room: Spatial):
+func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3):
 	if prev_room:
 		# Focus on room
 		var prev_room_center = room_manager.get_room_center(prev_room)
@@ -41,4 +41,4 @@ func _on_room_loaded(prev_room: Spatial, room: Spatial):
 
 func _ready():
 	base_size = size
-	room_manager.connect("room_loaded", self, "_on_room_loaded")
+	room_manager.connect("room_entered", self, "_on_room_entered")

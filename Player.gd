@@ -12,20 +12,22 @@ var wasCrouching = false
 var crouchFrames = 0
 var crouchTime = 0.416
 var running = false
+var player_has_control = true
 
 onready var room_manager = get_node("../RoomManager")
+onready var tween = get_node("Tween")
 onready var character_animation = get_node("Character/Animation")
 onready var character = get_node("Character")
 
-enum PlayerAnimations { 
-	CROUCH, 
-	CROUCH_IDLE, 
-	CROUCH_WALK, 
-	DEATH, 
-	IDLE, 
-	INTERRACT, 
-	RUN, 
-	SHOOT, 
+enum PlayerAnimations {
+	CROUCH,
+	CROUCH_IDLE,
+	CROUCH_WALK,
+	DEATH,
+	IDLE,
+	INTERRACT,
+	RUN,
+	SHOOT,
 	RUN_SHOOT,
 	CROUCH_SHOOT
 	CROUCH_WALK_SHOOT
@@ -33,7 +35,7 @@ enum PlayerAnimations {
 
 func get_input():
 	var tmp_direction = Vector3.ZERO
-	
+
 	if Input.is_action_pressed("move_forward"):
 		tmp_direction.x -= 1
 		tmp_direction.z -= 1
@@ -46,12 +48,12 @@ func get_input():
 	if Input.is_action_pressed("move_right"):
 		tmp_direction.x += 1
 		tmp_direction.z -= 1
-	
+
 	moving = false;
 	if tmp_direction.x != 0 or tmp_direction.z != 0:
 		moving = true
 		direction = tmp_direction.normalized()
-		
+
 	crouching = Input.is_action_pressed("crouch")
 	running = Input.is_action_pressed("run")
 
@@ -59,18 +61,18 @@ func handle_crouch(delta):
 	if not crouching:
 		wasCrouching = false
 		return
-		
+
 	if wasCrouching:
 		crouchFrames += delta
 	else:
 		crouchFrames = 0
 		wasCrouching = true
-	
+
 	if crouchFrames >= crouchTime:
 		enteringCrouch = false
 	else:
 		enteringCrouch = true
-		
+
 func derive_animation_state():
 	if crouching and enteringCrouch:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)
@@ -83,38 +85,70 @@ func derive_animation_state():
 	else:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
 
+func move_to(position: Vector3):
+	player_has_control = false
+	direction = (position - translation).normalized()
+
+	tween.interpolate_property(
+		self,
+		"translation",
+		translation,
+		position - character.translation,
+		1,
+		Tween.TRANS_LINEAR,
+		Tween.EASE_IN_OUT
+	)
+	tween.start()
+
 func _physics_process(delta):
-	get_input()
-	
+	moving = false
+	crouching = false
+	running = false
+
+	if player_has_control:
+		get_input()
+	else:
+		moving = true
+
 	var dir = ((transform.basis.z * direction.z) + (transform.basis.x * direction.x))
-	
+
 	handle_crouch(delta)
-	
+
 	var currentMoveSpeed = 0
 	if moving:
-		character.look_at(translation - dir, Vector3(0,1,0)) 
-		
+		character.look_at(translation - dir, Vector3(0,1,0))
+
 		currentMoveSpeed = moveSpeed
 		if crouching:
 			currentMoveSpeed = crouchMoveSpeed
 		elif running:
 			currentMoveSpeed = runMoveSpeed
-	
-	velocity.x = dir.x * currentMoveSpeed
-	velocity.z = dir.z * currentMoveSpeed
-	
-	move_and_collide(velocity * delta)
 
-	var nav_mesh = room_manager.get_active_navmesh()
-	if nav_mesh:
-		var room_offset = nav_mesh.get_parent().translation
-		var room_coord = translation - room_offset
-		var new_room_coord = nav_mesh.get_closest_point(room_coord)
-		translation = new_room_coord + room_offset
-		
+	if player_has_control:
+		velocity.x = dir.x * currentMoveSpeed
+		velocity.z = dir.z * currentMoveSpeed
+
+		move_and_collide(velocity * delta)
+
+		var nav_mesh = room_manager.get_active_navmesh()
+		if nav_mesh:
+			var room_offset = nav_mesh.get_parent().translation
+			var room_coord = translation - room_offset
+			var new_room_coord = nav_mesh.get_closest_point(room_coord)
+			translation = new_room_coord + room_offset
+
 	derive_animation_state()
 
-# Called when the node enters the scene tree for the first time.
+func _on_room_entered(prev_room: Spatial, room: Spatial, entrance_position: Vector3):
+	if prev_room:
+		move_to(entrance_position)
+
+func _on_tween_completed(_object: Object, _key: NodePath):
+	player_has_control = true
+	moving = false
+
 func _ready():
 	character_animation.active = true
 	character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
+	room_manager.connect("room_entered", self, "_on_room_entered")
+	tween.connect("tween_completed", self, "_on_tween_completed")
