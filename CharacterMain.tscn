@@ -1344,7 +1344,7 @@ animation = "Run-loop"
 animation = "Shoot"
 
 [sub_resource type="AnimationNodeBlendTree" id=18]
-graph_offset = Vector2( -47.5201, 34.7159 )
+graph_offset = Vector2( -47.5201, 49.4659 )
 "nodes/Crouch 2/node" = SubResource( 6 )
 "nodes/Crouch 2/position" = Vector2( -253.333, -146.667 )
 nodes/CrouchIdle/node = SubResource( 7 )
@@ -1374,14 +1374,11 @@ node_connections = [ "output", 0, "FinalBlend", "FinalBlend", 0, "MovementTransi
 
 [node name="Character" instance=ExtResource( 1 )]
 
-[node name="Skeleton" parent="Root" index="0"]
-bones/31/bound_children = [ NodePath("RightHand") ]
-
 [node name="characterMedium" parent="Root/Skeleton" index="0"]
 material/0 = SubResource( 1 )
 
 [node name="RightHand" type="BoneAttachment" parent="Root/Skeleton" index="1"]
-transform = Transform( 0.0355948, -0.316488, -0.947939, -0.283225, -0.912838, 0.294133, -0.958394, 0.258005, -0.122128, -0.656511, 1.3714, 0.139539 )
+transform = Transform( -0.0565844, -0.207797, -0.976544, -0.998091, 0.0360955, 0.0501503, 0.0248256, 0.977505, -0.209441, -0.632792, 1.89487, 0.931612 )
 bone_name = "RightHand"
 
 [node name="Weapon" parent="Root/Skeleton/RightHand" index="0" instance=ExtResource( 3 )]
@@ -1397,6 +1394,7 @@ anims/Run-loop = SubResource( 5 )
 [node name="Animation" type="AnimationTree" parent="." index="2"]
 tree_root = SubResource( 18 )
 anim_player = NodePath("../AnimationPlayer")
+active = true
 parameters/FinalBlend/blend_amount = 0.0
 parameters/InteractionTransition/current = 2
 parameters/MovementTransition/current = 5

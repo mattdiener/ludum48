@@ -193,8 +193,11 @@ func is_alive():
 
 func take_damage(amount: float):
 	hp -= amount
+
 	if hp <= 0:
 		currentState = NPCState.None
+	else:
+		currentState = NPCState.Alert
 
 func can_see_player():
 	# first find out if player is in fov
@@ -229,6 +232,9 @@ func can_hear_player():
 		return true
 	return false
 
+func can_melee_player():
+	return player.global_transform.origin.distance_to(global_transform.origin) <= meleeDistance
+
 func near_destination():
 	var dist = translation.distance_to(destination.translation)
 
@@ -247,6 +253,11 @@ func near_cover_destination():
 
 func react_to_player(delta):
 	var detected = false
+
+	# If touching, alert instantly
+	if can_melee_player():
+		currentState = NPCState.Alert
+		return true
 
 	if can_see_player():
 		detected = true
@@ -515,7 +526,7 @@ func handle_chase(delta):
 		lastState = currentState
 		return
 
-	if player.global_transform.origin.distance_to(global_transform.origin) <= meleeDistance:
+	if can_melee_player():
 		exit_chase_with_melee()
 		return
 
