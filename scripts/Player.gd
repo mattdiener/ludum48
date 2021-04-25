@@ -48,6 +48,9 @@ func is_dark():
 	
 func is_moving():
 	return moving
+	
+func is_crouching():
+	return crouching
 
 func get_input():
 	var tmp_direction = Vector3.ZERO

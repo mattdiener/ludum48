@@ -2,7 +2,7 @@ extends KinematicBody
 
 enum Type { Patrol, Boss, Idle }
 enum Style { Alien, Animal, Military, Robot, Zombie }
-enum NPCState { None, Patrol, Stand, Chase, Cover, Punch, Kick, Strafe }
+enum NPCState { None, Patrol, Stand, Chase, SeekCover, Cover, StandCover, Punch, Kick, Strafe, Alert }
 
 const ALIEN_MATERIALS = ["res://res/material/alienA.tres", "res://res/material/alienB.tres"]
 const ANIMAL_MATERIALS = ["res://res/material/animalA.tres", "res://res/material/animalB.tres", "res://res/material/animalC.tres", "res://res/material/animalD.tres", "res://res/material/animalG.tres", "res://res/material/animalJ.tres"]
@@ -43,10 +43,22 @@ const minStand = 5.0
 const maxStand = 10.0
 const rotationThreshold = 0.05
 const distanceThreshold = 1.0
+const coverDistanceThreshold = 0.4
 const viewDistance = 8.0
 const hearDistance = 3.0
 const fov = 1.4 #radians
 const cast_dist_tolerance = 0.3
+const detectedMaxTime = 2.5
+const alertTime = 1.25
+const minChase = 4.0
+const maxChase = 10.0
+const minCover = 2.0
+const maxCover = 8.0
+const punchTime = 1.2
+const kickTime = 1.2
+const punchDamage = 2
+const kickDamage = 3
+const meleeDistance = 0.5
 
 #objects
 var navmesh = null
@@ -67,15 +79,20 @@ var direction = Vector3.ZERO
 var moving = false
 var enteringCrouch = false
 var crouching = false
+var punching = false
+var kicking = false
 var wasCrouching = false
 var crouchFrames = 0
 var crouchTime = 0.416
 var running = false
+var alerted = false
+var strafing = false
 
 # AI State machine data
 var lastState = NPCState.None
 var stateTimer = 0
 var stateMaxTime = 0
+var detectedTime = 0
 var destination = null
 
 func init(type, room, player, style):
@@ -102,6 +119,7 @@ func _ready():
 	direction = Vector3(randf(), 0, randf()).normalized()
 	
 	character.look_at(global_transform.origin + direction, Vector3(0,1,0))
+		
 	indicator.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -112,19 +130,29 @@ func _physics_process(delta):
 	elif currentState == NPCState.Stand:
 		handle_stand(delta)
 	elif currentState == NPCState.Chase:
-		pass
+		handle_chase(delta)
+	elif currentState == NPCState.SeekCover:
+		handle_seek_cover(delta)
 	elif currentState == NPCState.Cover:
-		pass
+		handle_cover(delta)
+	elif currentState == NPCState.StandCover:
+		handle_stand_cover(delta)
 	elif currentState == NPCState.Punch:
-		pass
+		handle_punch(delta)
 	elif currentState == NPCState.Kick:
-		pass
+		handle_kick(delta)
 	elif currentState == NPCState.Strafe:
-		pass
+		handle_strafe(delta)
+	elif currentState == NPCState.Alert:
+		handle_alert(delta)
 
 	var currentMoveSpeed = 0
+	
+	if strafing:
+			character.look_at(player.global_transform.origin, Vector3(0,1,0))
 	if moving:
-		character.look_at(global_transform.origin + direction, Vector3(0,1,0))
+		if not strafing:
+			character.look_at(global_transform.origin + direction, Vector3(0,1,0))
 		currentMoveSpeed = walkSpeed
 		if running:
 			currentMoveSpeed = runSpeed
@@ -168,7 +196,7 @@ func can_see_player():
 	return false
 
 func can_hear_player():
-	if player.is_moving() and player.global_transform.origin.distance_to(global_transform.origin) <= hearDistance:
+	if player.is_moving() and player.global_transform.origin.distance_to(global_transform.origin) <= hearDistance and not player.is_crouching():
 		return true
 	return false
 
@@ -178,6 +206,36 @@ func near_destination():
 	if dist <= distanceThreshold:
 		return true
 
+	return false
+	
+func near_cover_destination():
+	var dist = translation.distance_to(destination.translation)
+
+	if dist <= coverDistanceThreshold:
+		return true
+
+	return false
+
+func react_to_player(delta):
+	var detected = false
+	
+	if can_see_player():
+		detected = true
+		
+	if can_hear_player():
+		detected = true
+	
+	if detected:
+		indicator.show()
+		detectedTime += delta
+	else:
+		indicator.hide()
+		detectedTime = 0
+	
+	if detectedTime >= detectedMaxTime:
+		currentState = NPCState.Alert
+		return true
+	
 	return false
 
 func handle_patrol(delta):
@@ -189,10 +247,8 @@ func handle_patrol(delta):
 		enter_patrol()
 	lastState = currentState
 
-	if can_see_player():
-		indicator.show()
-	else:
-		indicator.hide()
+	if react_to_player(delta):
+		return
 	
 	if destination == null:
 		exit_patrol()
@@ -226,16 +282,250 @@ func enter_patrol():
 func exit_patrol():
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+	
+func handle_seek_cover(delta):
+	moving = false
+	running = false
+	crouching = false
+
+	if lastState != currentState:
+		enter_seek_cover()
+	lastState = currentState
+	
+	if destination == null:
+		exit_alert()
+		return
+
+	if near_cover_destination():
+		exit_seek_cover()
+		return
+	
+	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
+	direction = direction.normalized()
+	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
+	moving = true
+	running = true
+
+func enter_seek_cover():
+	if room != null:
+		var tries = 0
+		while destination == null or near_cover_destination():
+			if tries >= 3:
+				destination = null
+				break
+
+			var waypoints = room.get_covers()
+			destination = waypoints[randi() % waypoints.size()]
+			tries += 1
+
+func exit_seek_cover():
+	currentState = NPCState.Cover
+	stateTimer = 0
+	
+func handle_cover(delta):
+	moving = false
+	running = false
+	crouching = false
+	strafing = false
+
+	if lastState != currentState:
+		enter_cover()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_cover()
+		return
+	stateTimer += delta
+
+	strafing = true
+	crouching = true
+
+func enter_cover():
+	stateTimer = 0
+	stateMaxTime = randf() * (maxCover - minCover) + minCover
+
+func exit_cover():
+	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover, NPCState.StandCover]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_stand_cover(delta):
+	moving = false
+	running = false
+	strafing = false
+
+	if lastState != currentState:
+		enter_stand_cover()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_stand_cover()
+		return
+	stateTimer += delta
+
+	strafing = true
+
+func enter_stand_cover():
+	stateTimer = 0
+	stateMaxTime = randf() * (maxCover - minCover) + minCover
+
+func exit_stand_cover():
+	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover, NPCState.Cover]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_punch(delta):
+	moving = false
+	running = false
+	strafing = false
+	punching = false
+
+	if lastState != currentState:
+		enter_punch()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_punch()
+		return
+	stateTimer += delta
+
+	strafing = true
+	punching = true
+	moving = true
+
+func enter_punch():
+	stateTimer = 0
+	stateMaxTime = punchTime
+
+func exit_punch():
+	var exit_states = [NPCState.Chase]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_kick(delta):
+	moving = false
+	running = false
+	strafing = false
+	kicking = false
+
+	if lastState != currentState:
+		enter_kick()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_kick()
+		return
+	stateTimer += delta
+
+	strafing = true
+	kicking = true
+	moving = true
+
+func enter_kick():
+	stateTimer = 0
+	stateMaxTime = kickTime
+
+func exit_kick():
+	var exit_states = [NPCState.Chase]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_strafe(delta):
+	moving = false
+	running = false
+	crouching = false
+
+	if lastState != currentState:
+		enter_strafe()
+	lastState = currentState
+	
+	if destination == null:
+		exit_strafe()
+		return
+
+	if near_destination():
+		exit_strafe()
+		return
+
+	var tra = translation
+	var pra = player.translation
+	var rra = room.translation
+	
+	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
+	direction = direction.normalized()
+	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
+	moving = true
+
+func enter_strafe():
+	strafing = true
+	if room != null:
+		var tries = 0
+		while destination == null or near_destination():
+			if tries >= 3:
+				destination = null
+				break
+
+			var waypoints = room.get_waypoints()
+			destination = waypoints[randi() % waypoints.size()]
+			tries += 1
+
+func exit_strafe():
+	strafing = false
+	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_chase(delta):
+	moving = false
+	running = false
+	crouching = false
+
+	if lastState != currentState:
+		enter_chase()
+		lastState = currentState
+		return
+	
+	if player.global_transform.origin.distance_to(global_transform.origin) <= meleeDistance:
+		exit_chase_with_melee()
+		return
+	
+	if stateTimer >= stateMaxTime:
+		exit_chase()
+		return
+	stateTimer += delta
+
+	var tra = translation
+	var pra = player.translation
+	var rra = room.translation
+	
+	direction = navmesh.get_simple_path(translation, player.global_transform.origin - room.global_transform.origin)[1] - translation
+	direction = direction.normalized()
+	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
+	moving = true
+	running = true
+
+func enter_chase():
+	stateTimer = 0
+	stateMaxTime = randf() * (maxChase - minChase) + minChase
+
+func exit_chase():
+	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+	
+func exit_chase_with_melee():
+	var exit_states = [NPCState.Punch, NPCState.Kick]
+	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
 
 func handle_stand(delta):
 	if lastState != currentState:
 		enter_stand()
 	lastState = currentState
 	
-	if can_see_player():
-		indicator.show()
-	else:
-		indicator.hide()
+	if react_to_player(delta):
+		return
 	
 	if stateTimer >= stateMaxTime:
 		exit_stand()
@@ -249,14 +539,39 @@ func enter_stand():
 func exit_stand():
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
+	stateTimer = 0
+
+func handle_alert(delta):
+	if lastState != currentState:
+		enter_alert()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_alert()
+		return
+
+	stateTimer += delta
+
+func enter_alert():
+	stateTimer = 0
+	stateMaxTime = alertTime
+	alerted = true
+
+func exit_alert():
+	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover]
+	currentState = exit_states[randi() % exit_states.size()]
+	alerted = false
+	stateTimer = 0
 
 func derive_animation_state():
-	if crouching and enteringCrouch:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)
-	elif crouching and not moving:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
+	if alerted:
+		character_animation.set("parameters/Transition/current", PlayerAnimations.ATTACK)
 	elif crouching:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_WALK)
+		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)
+	elif punching:
+		character_animation.set("parameters/Transition/current", PlayerAnimations.PUNCH_WALK)
+	elif kicking:
+		character_animation.set("parameters/Transition/current", PlayerAnimations.KICK_WALK)
 	elif moving and running:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.RUN)
 	elif moving:
