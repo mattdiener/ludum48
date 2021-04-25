@@ -29,23 +29,24 @@ onready var weapon = find_node("Weapon")
 onready var collision = get_node("CollisionShape")
 onready var crouchCollision = get_node("CrouchCollisionShape")
 
-enum PlayerAnimations {
+enum PlayerMovementAnimations {
 	CROUCH,
 	CROUCH_IDLE,
 	CROUCH_WALK,
 	DEATH,
 	IDLE,
-	INTERRACT,
-	RUN,
+	RUN
+}
+
+enum PlayerInteractionAnimations {
+	INTERACT,
 	SHOOT,
-	RUN_SHOOT,
-	CROUCH_SHOOT
-	CROUCH_WALK_SHOOT
+	IDLE
 }
 
 func is_dark():
 	return false
-	
+
 func is_moving():
 	return moving
 	
@@ -118,30 +119,27 @@ func handle_crouch(delta):
 		enteringCrouch = true
 
 func derive_animation_state():
-	var animation = PlayerAnimations.IDLE
+	var move_animation = PlayerMovementAnimations.IDLE
+	var interact_animation = PlayerInteractionAnimations.IDLE
 
 	if crouching:
 		if enteringCrouch:
-			animation = PlayerAnimations.CROUCH
+			move_animation = PlayerMovementAnimations.CROUCH
 		elif moving:
-			if weapon.shooting:
-				animation = PlayerAnimations.CROUCH_WALK
-			else:
-				animation = PlayerAnimations.CROUCH_WALK_SHOOT
-		else:
-			if weapon.shooting:
-				animation = PlayerAnimations.CROUCH_SHOOT
-			else:
-				animation = PlayerAnimations.CROUCH_IDLE
+			move_animation = PlayerMovementAnimations.CROUCH_WALK
 	elif moving:
-		if weapon.shooting:
-			animation = PlayerAnimations.RUN_SHOOT
-		else:
-			animation = PlayerAnimations.RUN
-	elif weapon.shooting:
-		animation = PlayerAnimations.SHOOT
+		move_animation = PlayerMovementAnimations.RUN
 
-	character_animation.set("parameters/Transition/current", animation)
+	if weapon.shooting:
+		interact_animation = PlayerInteractionAnimations.SHOOT
+
+	character_animation.set("parameters/MovementTransition/current", move_animation)
+	character_animation.set("parameters/InteractionTransition/current", interact_animation)
+
+	var blend = 0.0001  # HACK. Cannot set to 0
+	if interact_animation != PlayerInteractionAnimations.IDLE:
+		blend = 1
+	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
 func move_to(position: Vector3):
 	player_has_control = false
@@ -215,6 +213,5 @@ func _on_tween_completed(_object: Object, _key: NodePath):
 
 func _ready():
 	character_animation.active = true
-	character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
 	room_manager.connect("room_entered", self, "_on_room_entered")
 	tween.connect("tween_completed", self, "_on_tween_completed")

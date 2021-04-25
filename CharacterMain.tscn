@@ -1,9 +1,8 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://res/characterMedium.glb" type="PackedScene" id=1]
 [ext_resource path="res://res/texture/astroMaleA.png" type="Texture" id=2]
-[ext_resource path="res://scripts/Weapon.gd" type="Script" id=3]
-[ext_resource path="res://weapons/blasterJ.obj" type="ArrayMesh" id=4]
+[ext_resource path="res://Weapon.tscn" type="PackedScene" id=3]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 2 )
@@ -1287,62 +1286,43 @@ tracks/44/imported = true
 tracks/44/enabled = true
 tracks/44/keys = PoolRealArray( 0, 1, 0.0051744, 0.00616765, -0.0484595, 2.33373e-06, -2.96383e-09, 0.0125448, 0.999921, 1, 1, 1, 0.0666667, 1, 0.00527176, 0.0399004, -0.0484596, 4.66758e-07, -1.10627e-09, 0.00250902, 0.999997, 1, 1, 1, 0.133333, 1, 0.00527047, 0.0394523, -0.0484596, 4.91557e-07, -9.81308e-11, 0.00264233, 0.999997, 1, 1, 1, 0.2, 1, 0.00520003, 0.0150489, -0.0484596, 1.8422e-06, -3.40122e-10, 0.00990265, 0.999951, 1, 1, 1, 0.266667, 1, 0.0051744, 0.00616765, -0.0484595, 2.33373e-06, -2.96383e-09, 0.0125448, 0.999921, 1, 1, 1, 0.333333, 1, 0.0051744, 0.00616765, -0.0484595, 2.33373e-06, -2.96383e-09, 0.0125448, 0.999921, 1, 1, 1, 0.4, 1, 0.00527176, 0.0399004, -0.0484596, 4.66758e-07, -1.10627e-09, 0.00250902, 0.999997, 1, 1, 1, 0.466667, 1, 0.00527047, 0.0394523, -0.0484596, 4.91557e-07, -1.05408e-10, 0.00264233, 0.999997, 1, 1, 1, 0.533333, 1, 0.00520003, 0.0150489, -0.0484596, 1.8422e-06, -3.47393e-10, 0.00990265, 0.999951, 1, 1, 1, 0.6, 1, 0.0051744, 0.00616765, -0.0484595, 2.33373e-06, -2.9711e-09, 0.0125448, 0.999921, 1, 1, 1, 0.666667, 1, 0.0051744, 0.00616765, -0.0484595, 2.33373e-06, -2.96383e-09, 0.0125448, 0.999921, 1, 1, 1 )
 
-[sub_resource type="AnimationNodeBlend2" id=6]
-filter_enabled = true
-filters = [ "Root/Skeleton:Chest", "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:UpperChest" ]
-
-[sub_resource type="AnimationNodeBlend2" id=7]
-filter_enabled = true
-filters = [ "Root/Skeleton:Chest", "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:UpperChest" ]
-
-[sub_resource type="AnimationNodeBlend2" id=8]
-filter_enabled = true
-filters = [ "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:UpperChest" ]
-
-[sub_resource type="AnimationNodeAnimation" id=9]
+[sub_resource type="AnimationNodeAnimation" id=6]
 animation = "Crouch"
 
-[sub_resource type="AnimationNodeAnimation" id=10]
+[sub_resource type="AnimationNodeAnimation" id=7]
 animation = "CrouchIdle-loop"
 
-[sub_resource type="AnimationNodeAnimation" id=11]
-animation = "CrouchIdle-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=12]
+[sub_resource type="AnimationNodeAnimation" id=8]
 animation = "CrouchWalk-loop"
 
-[sub_resource type="AnimationNodeAnimation" id=13]
-animation = "CrouchWalk-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=14]
+[sub_resource type="AnimationNodeAnimation" id=9]
 animation = "Death"
 
-[sub_resource type="AnimationNodeAnimation" id=15]
+[sub_resource type="AnimationNodeBlend2" id=10]
+filter_enabled = true
+filters = [ "Root/Skeleton:Chest", "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:Spine", "Root/Skeleton:UpperChest" ]
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "Idle"
+
+[sub_resource type="AnimationNodeAnimation" id=12]
 animation = "Idle-loop"
 
-[sub_resource type="AnimationNodeAnimation" id=16]
+[sub_resource type="AnimationNodeAnimation" id=13]
 animation = "InteractStanding"
 
-[sub_resource type="AnimationNodeAnimation" id=17]
-animation = "Run-loop"
+[sub_resource type="AnimationNodeTransition" id=14]
+input_count = 3
+xfade_time = 0.25
+input_0/name = "Interact"
+input_0/auto_advance = false
+input_1/name = "Shoot"
+input_1/auto_advance = false
+input_2/name = "Idle"
+input_2/auto_advance = false
 
-[sub_resource type="AnimationNodeAnimation" id=18]
-animation = "Run-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=19]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeAnimation" id=20]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeAnimation" id=21]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeAnimation" id=22]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeTransition" id=23]
-input_count = 11
+[sub_resource type="AnimationNodeTransition" id=15]
+input_count = 6
 xfade_time = 0.5
 input_0/name = "Crouch"
 input_0/auto_advance = false
@@ -1354,59 +1334,43 @@ input_3/name = "Death"
 input_3/auto_advance = false
 input_4/name = "Idle"
 input_4/auto_advance = false
-input_5/name = "Interact"
+input_5/name = "Run"
 input_5/auto_advance = false
-input_6/name = "Run"
-input_6/auto_advance = false
-input_7/name = "Shoot"
-input_7/auto_advance = false
-input_8/name = "RunShoot"
-input_8/auto_advance = false
-input_9/name = "CrouchShoot"
-input_9/auto_advance = false
-input_10/name = "CrouchWalkShoot"
-input_10/auto_advance = false
 
-[sub_resource type="AnimationNodeBlendTree" id=24]
-graph_offset = Vector2( -644.39, -217.366 )
-nodes/Blend2/node = SubResource( 8 )
-nodes/Blend2/position = Vector2( 186.667, 640 )
-"nodes/Blend2 2/node" = SubResource( 6 )
-"nodes/Blend2 2/position" = Vector2( 160, 866.667 )
-"nodes/Blend2 3/node" = SubResource( 7 )
-"nodes/Blend2 3/position" = Vector2( 186.667, 1093.33 )
-"nodes/Crouch 2/node" = SubResource( 9 )
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "Run-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=17]
+animation = "Shoot"
+
+[sub_resource type="AnimationNodeBlendTree" id=18]
+graph_offset = Vector2( 0, -147.049 )
+"nodes/Crouch 2/node" = SubResource( 6 )
 "nodes/Crouch 2/position" = Vector2( -253.333, -146.667 )
-nodes/CrouchIdle/node = SubResource( 11 )
+nodes/CrouchIdle/node = SubResource( 7 )
 nodes/CrouchIdle/position = Vector2( -293.333, -40 )
-"nodes/CrouchIdle 2/node" = SubResource( 10 )
-"nodes/CrouchIdle 2/position" = Vector2( -40, 853.333 )
-nodes/CrouchWalk/node = SubResource( 13 )
+nodes/CrouchWalk/node = SubResource( 8 )
 nodes/CrouchWalk/position = Vector2( -266.667, 66.6667 )
-"nodes/CrouchWalk 2/node" = SubResource( 12 )
-"nodes/CrouchWalk 2/position" = Vector2( -40, 1066.67 )
-nodes/Death/node = SubResource( 14 )
+nodes/Death/node = SubResource( 9 )
 nodes/Death/position = Vector2( -253.333, 173.333 )
-nodes/Idle/node = SubResource( 15 )
+nodes/FinalBlend/node = SubResource( 10 )
+nodes/FinalBlend/position = Vector2( 680, 140 )
+nodes/Idle/node = SubResource( 12 )
 nodes/Idle/position = Vector2( -253.333, 280 )
-nodes/Interact/node = SubResource( 16 )
-nodes/Interact/position = Vector2( -253.333, 386.667 )
-nodes/Run/node = SubResource( 18 )
-nodes/Run/position = Vector2( -240, 493.333 )
-"nodes/Run 3/node" = SubResource( 17 )
-"nodes/Run 3/position" = Vector2( 0, 640 )
-nodes/Shoot/node = SubResource( 22 )
-nodes/Shoot/position = Vector2( -226.667, 600 )
-"nodes/Shoot 2/node" = SubResource( 19 )
-"nodes/Shoot 2/position" = Vector2( 13.3333, 746.667 )
-"nodes/Shoot 3/node" = SubResource( 20 )
-"nodes/Shoot 3/position" = Vector2( 13.3333, 960 )
-"nodes/Shoot 4/node" = SubResource( 21 )
-"nodes/Shoot 4/position" = Vector2( 13.3333, 1173.33 )
-nodes/Transition/node = SubResource( 23 )
-nodes/Transition/position = Vector2( 373.333, 40 )
-nodes/output/position = Vector2( 573.333, 40 )
-node_connections = [ "output", 0, "Transition", "Blend2", 0, "Run 3", "Blend2", 1, "Shoot 2", "Blend2 2", 0, "CrouchIdle 2", "Blend2 2", 1, "Shoot 3", "Blend2 3", 0, "CrouchWalk 2", "Blend2 3", 1, "Shoot 4", "Transition", 0, "Crouch 2", "Transition", 1, "CrouchIdle", "Transition", 2, "CrouchWalk", "Transition", 3, "Death", "Transition", 4, "Idle", "Transition", 5, "Interact", "Transition", 6, "Run", "Transition", 7, "Shoot", "Transition", 8, "Blend2", "Transition", 9, "Blend2 2", "Transition", 10, "Blend2 3" ]
+"nodes/Idle 2/node" = SubResource( 11 )
+"nodes/Idle 2/position" = Vector2( -57.8867, 792.104 )
+nodes/Interact/node = SubResource( 13 )
+nodes/Interact/position = Vector2( -100, 520 )
+nodes/InteractionTransition/node = SubResource( 14 )
+nodes/InteractionTransition/position = Vector2( 360, 420 )
+nodes/MovementTransition/node = SubResource( 15 )
+nodes/MovementTransition/position = Vector2( 420, -40 )
+nodes/Run/node = SubResource( 16 )
+nodes/Run/position = Vector2( -260, 380 )
+nodes/Shoot/node = SubResource( 17 )
+nodes/Shoot/position = Vector2( -80, 660 )
+nodes/output/position = Vector2( 800, -20 )
+node_connections = [ "output", 0, "FinalBlend", "FinalBlend", 0, "MovementTransition", "FinalBlend", 1, "InteractionTransition", "MovementTransition", 0, "Crouch 2", "MovementTransition", 1, "CrouchIdle", "MovementTransition", 2, "CrouchWalk", "MovementTransition", 3, "Death", "MovementTransition", 4, "Idle", "MovementTransition", 5, "Run", "InteractionTransition", 0, "Interact", "InteractionTransition", 1, "Shoot", "InteractionTransition", 2, "Idle 2" ]
 
 [node name="Character" instance=ExtResource( 1 )]
 
@@ -1414,20 +1378,10 @@ node_connections = [ "output", 0, "Transition", "Blend2", 0, "Run 3", "Blend2", 
 material/0 = SubResource( 1 )
 
 [node name="RightHand" type="BoneAttachment" parent="Root/Skeleton" index="1"]
-transform = Transform( 0.0471012, -0.308904, -0.949936, -0.369002, -0.889099, 0.270823, -0.928236, 0.337766, -0.155862, -0.701127, 1.32845, 0.408691 )
+transform = Transform( 0.0355948, -0.316488, -0.947939, -0.283225, -0.912838, 0.294133, -0.958394, 0.258005, -0.122128, -0.656511, 1.3714, 0.139539 )
 bone_name = "RightHand"
 
-[node name="Weapon" type="Spatial" parent="Root/Skeleton/RightHand" index="0"]
-transform = Transform( 0.105562, -1.91708, 0.560067, 0.394401, -0.529795, -1.88779, 1.95788, 0.210086, 0.350085, -0.323494, 0.483362, -0.0971344 )
-script = ExtResource( 3 )
-
-[node name="MeshInstance" type="MeshInstance" parent="Root/Skeleton/RightHand/Weapon" index="0"]
-transform = Transform( 1, 2.32831e-10, 0, 0, 1, -3.72529e-09, 3.72529e-09, 0, 1, 0, 0, 0 )
-mesh = ExtResource( 4 )
-material/0 = null
-material/1 = null
-material/2 = null
-material/3 = null
+[node name="Weapon" parent="Root/Skeleton/RightHand" index="0" instance=ExtResource( 3 )]
 
 [node name="AnimationPlayer" parent="." index="1"]
 autoplay = "Idle-loop"
@@ -1438,10 +1392,8 @@ anims/Idle-loop = SubResource( 4 )
 anims/Run-loop = SubResource( 5 )
 
 [node name="Animation" type="AnimationTree" parent="." index="2"]
-tree_root = SubResource( 24 )
+tree_root = SubResource( 18 )
 anim_player = NodePath("../AnimationPlayer")
-active = true
-parameters/Blend2/blend_amount = 1.0
-"parameters/Blend2 2/blend_amount" = 1.0
-"parameters/Blend2 3/blend_amount" = 1.0
-parameters/Transition/current = 6
+parameters/FinalBlend/blend_amount = 0.0
+parameters/InteractionTransition/current = 2
+parameters/MovementTransition/current = 5
