@@ -1,7 +1,6 @@
 extends Node
 
-func _ready():
-	find_parent("Room").add_cover(self)
+const type:String = "Cover"
 
 func blocks_object(obj):
 	return false

@@ -1,9 +1,12 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://res/room1.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://scripts/Exit_Left.gd" type="Script" id=2]
 [ext_resource path="res://scripts/Exit_Right.gd" type="Script" id=3]
 [ext_resource path="res://scripts/Room.gd" type="Script" id=4]
+[ext_resource path="res://objects/Waypoint.tscn" type="PackedScene" id=5]
+[ext_resource path="res://objects/Cover.tscn" type="PackedScene" id=6]
+[ext_resource path="res://objects/Spawnpoint.tscn" type="PackedScene" id=7]
 
 [sub_resource type="NavigationMesh" id=1]
 vertices = PoolVector3Array( 0.295, 0.2, 2.695, 0.595, 0.2, 2.695, 0.895, 0.3, 1.795, 0.295, 0.2, 0.295, 4.795, 0.2, 1.495, 8.395, 0.2, 1.795, 10.795, 0.2, 0.295, 0.295, 0.2, 0.295, 3.295, 0.3, 10.795, 4.795, 0.2, 10.795, 5.095, 0.2, 9.895, 3.595, 0.2, 8.695, 9.895, 0.2, 8.995, 8.095, 0.2, 9.595, 5.995, 0.2, 10.795, 10.795, 0.2, 10.795, 10.795, 0.2, 9.295, 5.995, 0.2, 10.795, 8.095, 0.2, 9.595, 6.595, 0.2, 9.295, 5.695, 0.2, 9.895, 9.895, 0.2, 2.095, 10.795, 0.2, 1.795, 10.795, 0.2, 0.295, 8.395, 0.2, 1.795, 8.095, 0.2, 3.595, 5.995, 0.2, 3.595, 5.995, 0.2, 4.495, 8.395, 0.2, 4.795, 9.895, 0.2, 2.995, 9.895, 0.2, 2.095, 8.395, 0.2, 1.795, 8.095, 0.2, 3.595, 8.395, 0.2, 4.795, 4.795, 0.2, 6.595, 4.495, 0.2, 5.995, 2.695, 0.2, 7.495, 0.295, 0.2, 0.295, 0.895, 0.3, 1.795, 2.095, 0.3, 1.795, 4.795, 0.2, 1.495, 4.795, 0.2, 6.595, 2.695, 0.2, 7.495, 3.595, 0.2, 8.695, 5.695, 0.2, 9.895, 6.595, 0.2, 9.295, 6.595, 0.2, 6.295, 3.595, 0.2, 8.695, 5.095, 0.2, 9.895, 5.695, 0.2, 9.895, 2.095, 0.3, 1.795, 2.095, 0.2, 3.295, 4.495, 0.2, 3.295, 4.795, 0.2, 1.495, 10.795, 0.2, 3.295, 9.895, 0.2, 2.995, 8.395, 0.2, 4.795, 9.895, 0.2, 8.095, 10.795, 0.2, 7.795, 9.895, 0.2, 8.095, 8.395, 0.2, 4.795, 8.095, 0.2, 9.595, 9.895, 0.2, 8.995, 0.895, 0.2, 3.295, 0.595, 0.2, 2.695, 0.295, 0.2, 2.695, 0.295, 0.2, 10.795, 1.795, 0.3, 10.795, 1.495, 0.2, 7.795, 4.495, 0.2, 4.795, 5.995, 0.2, 4.495, 5.995, 0.2, 3.595, 4.495, 0.2, 3.295, 2.095, 0.2, 3.295, 2.695, 0.2, 7.495, 4.495, 0.2, 5.995, 4.495, 0.2, 4.795, 2.095, 0.2, 3.295, 0.895, 0.2, 3.295, 1.495, 0.2, 7.795 )
@@ -63,3 +66,56 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.5 )
 
 [node name="Entrance_Right" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 0 )
+
+[node name="Points" type="Spatial" parent="."]
+
+[node name="Cover" parent="Points" instance=ExtResource( 6 )]
+transform = Transform( -0.0006458, 0, -1, 0, 1, 0, 1, 0, -0.0006458, 6.21597, 0, 1.4702 )
+
+[node name="Cover2" parent="Points" instance=ExtResource( 6 )]
+transform = Transform( -0.0516562, 0, 0.998665, 0, 1, 0, -0.998665, 0, -0.0516562, 5.98036, 0, 3.73035 )
+
+[node name="Cover3" parent="Points" instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 6.41656, 0, 6.5957 )
+
+[node name="Cover4" parent="Points" instance=ExtResource( 6 )]
+transform = Transform( -0.999426, 0, 0.0338879, 0, 1, 0, -0.0338879, 0, -0.999426, 8.30631, 0, 6.32065 )
+
+[node name="Waypoint" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.81496, 0, 1.00717 )
+
+[node name="Waypoint2" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.17424, 0, 1.00717 )
+
+[node name="Waypoint3" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.17424, 0, 4.37718 )
+
+[node name="Waypoint4" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77067, 0, 4.37718 )
+
+[node name="Waypoint5" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.71921, 0, 7.86351 )
+
+[node name="Waypoint6" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.36629, 0, 10.3886 )
+
+[node name="Waypoint7" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 8.81871, 0, 6.65132 )
+
+[node name="Waypoint8" parent="Points" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.51427, 0, 1.0391 )
+
+[node name="Spawnpoint" parent="Points" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.40648, 0, 1.30687 )
+
+[node name="Spawnpoint2" parent="Points" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.07864, 0, 1.30687 )
+
+[node name="Spawnpoint3" parent="Points" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 9.07864, 0, 4.28771 )
+
+[node name="Spawnpoint4" parent="Points" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.563, 0, 4.28771 )
+
+[node name="Spawnpoint5" parent="Points" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.42257, 0, 10.2023 )

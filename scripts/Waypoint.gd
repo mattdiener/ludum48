@@ -1,4 +1,3 @@
 extends Node
 
-func _ready():
-	find_parent("Room").add_waypoint(self)
+const type:String = "Waypoint"

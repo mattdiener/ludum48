@@ -1,4 +1,4 @@
-extends Spatial
+extends KinematicBody
 
 enum Type { Patrol, Boss, Idle }
 enum Style { Alien, Animal, Military, Robot, Zombie }
@@ -33,19 +33,21 @@ enum PlayerAnimations {
 	SHOOT_WALK
 }
 
-export(Type) var type
-export(NodePath) var roomPath
-export(Style) var style
+export(Type) var type = 0
+export(NodePath) var roomPath = null
+export(NodePath) var playerPath = null
+export(Style) var style = 0
 
-onready var room = get_node(roomPath) 
-onready var mesh = get_node("Root/Skeleton/characterLargeMale")
-onready var character_animation = get_node("AnimationTree")
+var navmesh = null
+var room = null
+var player = null 
+onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale")
+onready var character_animation = get_node("characterLargeMale/AnimationTree")
 onready var character = self
 
 var currentState : int = NPCState.Stand
-var runMoveSpeed = 5.0
-var moveSpeed = 3.0
-var crouchMoveSpeed = 1.0
+var runSpeed = 2.8
+var walkSpeed = 1.0
 var velocity = Vector3.ZERO
 var direction = Vector3.ZERO
 var moving = false
@@ -56,18 +58,38 @@ var crouchFrames = 0
 var crouchTime = 0.416
 var running = false
 
-# Called when the node enters the scene tree for the first time.
+# AI State machine data
+var lastState = null
+var stateTimer = 0
+var stateMaxTime = 0
+var destination = null
+
+func init(type, room, player, style):
+	self.type = type
+	self.room = roomPath
+	self.player = playerPath
+	self.style = style
+
 func _ready():
 	var material_res = NPC_MATERIALS[style][randi() % NPC_MATERIALS[style].size()]
 	var material = ResourceLoader.load(material_res)
 	mesh["material/0"] = material
 	character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
+	
+	if room:
+		 navmesh = room.get_navmesh()
+	
+	if roomPath != null:
+		room = get_node(roomPath) 
+	
+	if playerPath != null:
+		player = get_node(playerPath) 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# Do different control based on state
 	if currentState == NPCState.Patrol:
-		pass
+		handle_patrol()
 	elif currentState == NPCState.Stand:
 		pass
 	elif currentState == NPCState.Chase:
@@ -80,9 +102,68 @@ func _process(delta):
 		pass
 	elif currentState == NPCState.Strafe:
 		pass
+
+	var dir = direction		
+	var currentMoveSpeed = 0
+	if moving:
+		character.look_at(translation - dir, Vector3(0,1,0))
+		currentMoveSpeed = walkSpeed
+		if running:
+			currentMoveSpeed = runSpeed
+
+	velocity.x = dir.x * currentMoveSpeed
+	velocity.z = dir.z * currentMoveSpeed
+
+	move_and_collide(velocity * delta)
+
+	if navmesh:
+		var room_offset = navmesh.get_parent().translation
+		var room_coord = translation - room_offset
+		var new_room_coord = navmesh.get_closest_point(room_coord)
+		translation = new_room_coord + room_offset
 	
 	derive_animation_state()
+
+func near_destination():
+	return false
+
+func handle_patrol():
+	moving = false
+	running = false
+	crouching = false
 	
+	if lastState != currentState:
+		enter_patrol()
+	lastState = currentState
+	
+	if destination == null:
+		exit_patrol()
+		return
+	
+	if near_destination():
+		exit_patrol()
+		return
+	
+	direction = navmesh.get_simple_path(translation, player.translation - room.translation)[0] - translation
+	direction = direction.normalized()
+	moving = true
+
+func enter_patrol():
+	if room != null:
+		var tries = 0
+		while destination == null or near_destination():
+			if tries >= 3:
+				destination = null
+				break
+			
+			var waypoints = room.get_waypoints()
+			destination = waypoints[randi() % waypoints.size()]
+			tries += 1
+
+func exit_patrol():
+	var exit_states = [NPCState.Stand, NPCState.Patrol]
+	currentState = exit_states[randi() % exit_states.size()]
+
 func derive_animation_state():
 	if crouching and enteringCrouch:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)

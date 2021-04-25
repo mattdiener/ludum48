@@ -12,6 +12,8 @@ enum EntranceDirection {
 }
 
 onready var loaded_rooms = get_node("LoadedRooms")
+onready var player = get_node("/Main/Player")
+
 var active_room = null
 var room_scene_files = []
 
@@ -53,10 +55,11 @@ func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 	emit_signal("room_entered", active_room, new_active_room, entrance_position)
 	active_room = new_active_room
 
-
 func load_room(room_path: String):
 	var room_resource = load(room_path)
-	return room_resource.instance()
+	var inst = room_resource.instance()
+	inst.init(player)
+	return inst
 
 func load_random_room(entrance_direction):
 	var valid_room = false
