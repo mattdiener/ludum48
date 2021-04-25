@@ -1410,14 +1410,11 @@ node_connections = [ "output", 0, "Transition", "Blend2", 0, "Run 3", "Blend2", 
 
 [node name="Character" instance=ExtResource( 1 )]
 
-[node name="Skeleton" parent="Root" index="0"]
-bones/31/bound_children = [ NodePath("RightHand") ]
-
 [node name="characterMedium" parent="Root/Skeleton" index="0"]
 material/0 = SubResource( 1 )
 
 [node name="RightHand" type="BoneAttachment" parent="Root/Skeleton" index="1"]
-transform = Transform( 0.0600635, -0.305513, -0.950302, -0.190099, -0.938091, 0.289571, -0.979926, 0.163255, -0.114421, -0.701662, 1.30166, 0.281901 )
+transform = Transform( 0.0415766, -0.260881, -0.964485, 0.202232, -0.943135, 0.263822, -0.978454, -0.206018, 0.0135461, -0.681856, 1.3462, 0.00946587 )
 bone_name = "RightHand"
 
 [node name="Weapon" type="Spatial" parent="Root/Skeleton/RightHand" index="0"]

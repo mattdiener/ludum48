@@ -1087,7 +1087,7 @@ nodes/ShootWalk/position = Vector2( 173.333, 1440 )
 nodes/Transition/node = SubResource( 22 )
 nodes/Transition/position = Vector2( 546.667, 653.333 )
 nodes/output/position = Vector2( 893.333, 880 )
-node_connections = [ "output", 0, "Transition", "Transition", 0, "Animation", "Transition", 1, "Animation 2", "Transition", 2, "Animation 3", "Transition", 3, "Animation 4", "Transition", 4, "Animation 5", "Transition", 5, "Animation 6", "Transition", 6, "Animation 7", "Transition", 7, "Animation 8", "Transition", 8, "Animation 9", "Transition", 9, "PunchWalk", "Transition", 10, "KickWalk", "Transition", 11, "ShootWalk", "KickWalk", 0, "Animation 13", "KickWalk", 1, "Animation 12", "PunchWalk", 0, "Animation 11", "PunchWalk", 1, "Animation 10", "ShootWalk", 0, "Animation 15", "ShootWalk", 1, "Animation 14" ]
+node_connections = [ "output", 0, "Transition", "Transition", 0, "Animation", "Transition", 1, "Animation 2", "Transition", 2, "Animation 3", "Transition", 3, "Animation 4", "Transition", 4, "Animation 5", "Transition", 5, "Animation 6", "Transition", 6, "Animation 7", "Transition", 7, "Animation 8", "Transition", 8, "Animation 9", "Transition", 9, "PunchWalk", "Transition", 10, "KickWalk", "Transition", 11, "ShootWalk", "ShootWalk", 0, "Animation 15", "ShootWalk", 1, "Animation 14", "KickWalk", 0, "Animation 13", "KickWalk", 1, "Animation 12", "PunchWalk", 0, "Animation 11", "PunchWalk", 1, "Animation 10" ]
 
 [node name="characterLargeMale" instance=ExtResource( 1 )]
 
