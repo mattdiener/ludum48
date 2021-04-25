@@ -1,10 +1,10 @@
 extends Spatial
 
-onready var player = find_parent("Player")
 onready var shoot_timer = get_node("ShootTimer")
 
 # Whether the trigger is held
 var shooting = false
+var parent = null
 
 func begin_shoot():
 	# Don't trigger another shot if the trigger is held
@@ -23,8 +23,14 @@ func _on_fire_projectile():
 		global_transform.origin.y,
 		global_transform.origin.z
 	)
-	projectile.init(player.direction.normalized())
-	get_tree().get_root().add_child(projectile)
+	if parent:
+		projectile.init(parent.get_look_direction())
+		get_tree().get_root().add_child(projectile)
+	else:
+		projectile.queue_free()
+
+func bind_parent(parent):
+	self.parent = parent
 
 func end_shoot():
 	shooting = false

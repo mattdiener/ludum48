@@ -141,6 +141,11 @@ func derive_animation_state():
 		blend = 1
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
+func get_look_direction():
+	if strafing: 
+		return forward_strafe_direction.normalized()
+	return direction.normalized()
+
 func move_to(position: Vector3):
 	player_has_control = false
 	strafing = false
@@ -215,3 +220,4 @@ func _ready():
 	character_animation.active = true
 	room_manager.connect("room_entered", self, "_on_room_entered")
 	tween.connect("tween_completed", self, "_on_tween_completed")
+	weapon.bind_parent(self)

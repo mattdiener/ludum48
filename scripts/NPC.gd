@@ -18,7 +18,7 @@ const NPC_MATERIALS = [
 	ZOMBIE_MATERIALS
 ]
 
-enum PlayerAnimations {
+enum PlayerMovementAnimations {
 	ATTACK,
 	CROUCH,
 	DEATH,
@@ -26,11 +26,12 @@ enum PlayerAnimations {
 	KICK,
 	PUNCH,
 	RUN,
+	WALK
+}
+
+enum PlayerInteractionAnimations {
 	SHOOT,
-	WALK,
-	PUNCH_WALK,
-	KICK_WALK,
-	SHOOT_WALK
+	IDLE
 }
 
 export(Type) var type = 0
@@ -48,7 +49,7 @@ const viewDistance = 8.0
 const hearDistance = 3.0
 const fov = 1.4 #radians
 const cast_dist_tolerance = 0.3
-const detectedMaxTime = 2.5
+const detectedMaxTime = 1.5
 const alertTime = 1.25
 const minChase = 4.0
 const maxChase = 10.0
@@ -69,6 +70,7 @@ onready var character_animation = get_node("characterLargeMale/AnimationTree")
 onready var eye_position = get_node("EyePosition")
 onready var indicator = get_node("Indicator")
 onready var character = self
+onready var weapon = find_node("Weapon")
 
 #Movement
 var currentState : int = NPCState.Stand
@@ -87,6 +89,7 @@ var crouchTime = 0.416
 var running = false
 var alerted = false
 var strafing = false
+var sawPlayer = false
 
 # AI State machine data
 var lastState = NPCState.None
@@ -105,7 +108,6 @@ func _ready():
 	var material_res = NPC_MATERIALS[style][randi() % NPC_MATERIALS[style].size()]
 	var material = ResourceLoader.load(material_res)
 	mesh["material/0"] = material
-	character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
 
 	if room:
 		 navmesh = room.get_navmesh()
@@ -121,6 +123,7 @@ func _ready():
 	character.look_at(global_transform.origin + direction, Vector3(0,1,0))
 		
 	indicator.hide()
+	weapon.bind_parent(self)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -146,6 +149,15 @@ func _physics_process(delta):
 	elif currentState == NPCState.Alert:
 		handle_alert(delta)
 
+	if strafing and not punching and not kicking:
+		var can_see = can_see_player()
+		if (can_see and not sawPlayer):
+			weapon.begin_shoot()
+			sawPlayer = true
+		elif (sawPlayer and not can_see):
+			weapon.end_shoot()
+			sawPlayer = false
+
 	var currentMoveSpeed = 0
 	
 	if strafing:
@@ -166,6 +178,11 @@ func _physics_process(delta):
 		translation = navmesh.get_closest_point(translation)
 	
 	derive_animation_state()
+
+func get_look_direction():
+	if strafing: 
+		return (player.global_transform.origin - global_transform.origin).normalized()
+	return direction.normalized()
 
 func can_see_player():
 	# first find out if player is in fov
@@ -564,18 +581,32 @@ func exit_alert():
 	stateTimer = 0
 
 func derive_animation_state():
+	var move_animation = PlayerMovementAnimations.IDLE
+	var interact_animation = PlayerInteractionAnimations.IDLE
+	
 	if alerted:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.ATTACK)
+		move_animation = PlayerMovementAnimations.ATTACK
 	elif crouching:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)
+		move_animation = PlayerMovementAnimations.CROUCH
 	elif punching:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.PUNCH_WALK)
+		move_animation = PlayerMovementAnimations.PUNCH
 	elif kicking:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.KICK_WALK)
+		move_animation = PlayerMovementAnimations.KICK
 	elif moving and running:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.RUN)
+		move_animation = PlayerMovementAnimations.RUN
 	elif moving:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.WALK)
+		move_animation = PlayerMovementAnimations.WALK
 	else:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
+		move_animation = PlayerMovementAnimations.IDLE
+	
+	if weapon.shooting:
+		interact_animation = PlayerInteractionAnimations.SHOOT
+	
+	character_animation.set("parameters/MovementTransition/current", move_animation)
+	character_animation.set("parameters/InteractionTransition/current", interact_animation)
+	
+	var blend = 0.0001  # HACK. Cannot set to 0
+	if interact_animation != PlayerInteractionAnimations.IDLE:
+		blend = 1
+	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
