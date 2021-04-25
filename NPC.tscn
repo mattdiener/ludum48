@@ -4,7 +4,7 @@
 [ext_resource path="res://NPC.gd" type="Script" id=2]
 [ext_resource path="res://res/material/alienA.tres" type="Material" id=3]
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=1]
 resource_name = "Idle-loop"
 length = 1.33333
 loop = true
@@ -324,7 +324,7 @@ tracks/44/imported = true
 tracks/44/enabled = true
 tracks/44/keys = PoolRealArray( 0, 1, 0, 0, 0, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.0666667, 1, 2.51085e-06, 0.000870228, -1.49012e-08, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.133333, 1, 9.33232e-06, 0.00323355, -1.49012e-08, 1.42109e-14, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.2, 1, 2.05375e-05, 0.00711584, -1.49012e-08, 1.42109e-14, 2.9255e-24, 2.05864e-10, 1, 1, 1, 1, 0.533333, 1, 9.41469e-05, 0.0326204, 1.49012e-08, 1.42109e-14, 2.9255e-24, 2.05864e-10, 1, 1, 1, 1, 0.6, 1, 0.000100968, 0.0349838, 1.49012e-08, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.666667, 1, 0.00010348, 0.0358537, 0, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.733333, 1, 0.000100968, 0.0349838, 0, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.8, 1, 9.41469e-05, 0.0326204, 0, -1.42109e-14, -1.27114e-24, 8.94484e-11, 1, 1, 1, 1, 0.866667, 1, 8.29413e-05, 0.0287379, -1.49012e-08, 1.42109e-14, 2.9255e-24, 2.05864e-10, 1, 1, 1, 1, 1.2, 1, 9.33232e-06, 0.00323355, -2.98023e-08, 2.84217e-14, 7.27596e-12, 2.05864e-10, 1, 1, 1, 1, 1.26667, 1, 2.51085e-06, 0.000870228, -2.98023e-08, 1.42109e-14, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 1.33333, 1, 0, 0, 0, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1 )
 
-[sub_resource type="Animation" id=9]
+[sub_resource type="Animation" id=2]
 resource_name = "Run-loop"
 length = 0.666667
 loop = true
@@ -644,7 +644,7 @@ tracks/44/imported = true
 tracks/44/enabled = true
 tracks/44/keys = PoolRealArray( 0, 1, 0.0051744, 0.00616741, -0.0484595, 2.33373e-06, -2.59998e-09, 0.0125448, 0.999921, 1, 1, 1, 0.0666667, 1, 0.00527176, 0.0399001, -0.0484595, 4.66758e-07, -1.01168e-09, 0.00250903, 0.999997, 1, 1, 1, 0.133333, 1, 0.00527046, 0.0394518, -0.0484595, 4.91556e-07, -3.54401e-12, 0.00264233, 0.999997, 1, 1, 1, 0.2, 1, 0.00520003, 0.0150486, -0.0484595, 1.84221e-06, -6.36065e-11, 0.00990265, 0.999951, 1, 1, 1, 0.266667, 1, 0.0051744, 0.00616741, -0.0484595, 2.33373e-06, -2.59997e-09, 0.0125448, 0.999921, 1, 1, 1, 0.333333, 1, 0.0051744, 0.00616741, -0.0484595, 2.33373e-06, -2.59998e-09, 0.0125448, 0.999921, 1, 1, 1, 0.4, 1, 0.00527176, 0.0399001, -0.0484595, 4.66758e-07, -1.01169e-09, 0.00250902, 0.999997, 1, 1, 1, 0.466667, 1, 0.00527046, 0.0394518, -0.0484595, 4.91556e-07, -3.54457e-12, 0.00264233, 0.999997, 1, 1, 1, 0.533333, 1, 0.00520003, 0.0150486, -0.0484595, 1.84221e-06, -6.35985e-11, 0.00990265, 0.999951, 1, 1, 1, 0.6, 1, 0.0051744, 0.00616741, -0.0484595, 2.33373e-06, -2.60725e-09, 0.0125448, 0.999921, 1, 1, 1, 0.666667, 1, 0.0051744, 0.00616741, -0.0484595, 2.33373e-06, -2.59998e-09, 0.0125448, 0.999921, 1, 1, 1 )
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=3]
 resource_name = "Walk-loop"
 length = 1.33333
 loop = true
@@ -964,62 +964,62 @@ tracks/44/imported = true
 tracks/44/enabled = true
 tracks/44/keys = PoolRealArray( 0, 1, -2.84794e-05, -0.05801, 0.0110198, -0.0147922, 4.26926e-05, 2.75231e-06, 0.999891, 1, 1, 1, 0.0666667, 1, -1.65449e-05, -0.0510793, 0.01137, -0.0133597, 3.85581e-05, 2.48589e-06, 0.999911, 1, 1, 1, 0.133333, 1, 1.35507e-05, -0.0336015, 0.0122533, -0.00974706, 2.81315e-05, 1.81374e-06, 0.999952, 1, 1, 1, 0.2, 1, 5.27166e-05, -0.010857, 0.0134028, -0.00504551, 1.45621e-05, 9.38894e-07, 0.999987, 1, 1, 1, 0.266667, 1, 8.28127e-05, 0.00662065, 0.0142861, -0.00143266, 4.1349e-06, 2.66902e-07, 0.999999, 1, 1, 1, 0.333333, 1, 9.47472e-05, 0.0135514, 0.0146364, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 0.4, 1, 8.28127e-05, 0.00662065, 0.0142861, -0.00143266, 4.13489e-06, 2.66902e-07, 0.999999, 1, 1, 1, 0.466667, 1, 5.27166e-05, -0.010857, 0.0134028, -0.00504551, 1.45621e-05, 9.38894e-07, 0.999987, 1, 1, 1, 0.533333, 1, 1.35507e-05, -0.0336015, 0.0122533, -0.00974707, 2.81315e-05, 1.81363e-06, 0.999952, 1, 1, 1, 0.6, 1, -1.65445e-05, -0.0510792, 0.01137, -0.0133597, 3.85581e-05, 2.48589e-06, 0.999911, 1, 1, 1, 0.666667, 1, -2.84794e-05, -0.05801, 0.0110198, -0.0147922, 4.26926e-05, 2.75231e-06, 0.999891, 1, 1, 1, 0.733333, 1, -1.65449e-05, -0.0510793, 0.01137, -0.0133597, 3.85581e-05, 2.48589e-06, 0.999911, 1, 1, 1, 0.8, 1, 1.35507e-05, -0.0336015, 0.0122533, -0.00974707, 2.81315e-05, 1.81363e-06, 0.999952, 1, 1, 1, 0.866667, 1, 5.27166e-05, -0.010857, 0.0134028, -0.00504551, 1.45621e-05, 9.38894e-07, 0.999987, 1, 1, 1, 0.933333, 1, 8.28127e-05, 0.00662065, 0.0142861, -0.00143266, 4.13491e-06, 2.66785e-07, 0.999999, 1, 1, 1, 1, 1, 9.47472e-05, 0.0135514, 0.0146364, 3.10958e-23, 7.27596e-12, 8.94484e-11, 1, 1, 1, 1, 1.06667, 1, 8.28127e-05, 0.00662065, 0.0142861, -0.00143267, 4.13491e-06, 2.66902e-07, 0.999999, 1, 1, 1, 1.13333, 1, 5.27166e-05, -0.010857, 0.0134028, -0.00504551, 1.45621e-05, 9.39011e-07, 0.999987, 1, 1, 1, 1.2, 1, 1.35507e-05, -0.0336015, 0.0122533, -0.00974707, 2.81315e-05, 1.81363e-06, 0.999952, 1, 1, 1, 1.26667, 1, -1.65445e-05, -0.0510792, 0.01137, -0.0133597, 3.85581e-05, 2.48578e-06, 0.999911, 1, 1, 1, 1.33333, 1, -2.84794e-05, -0.05801, 0.0110198, -0.0147922, 4.26926e-05, 2.75231e-06, 0.999891, 1, 1, 1 )
 
-[sub_resource type="AnimationNodeAnimation" id=16]
+[sub_resource type="AnimationNodeAnimation" id=4]
 animation = "Punch"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "Walk-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "Kick"
+
+[sub_resource type="AnimationNodeAnimation" id=7]
+animation = "Walk-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=8]
+animation = "Shoot"
+
+[sub_resource type="AnimationNodeAnimation" id=9]
+animation = "Walk-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=10]
+animation = "Crouch"
+
+[sub_resource type="AnimationNodeAnimation" id=11]
+animation = "Death"
+
+[sub_resource type="AnimationNodeAnimation" id=12]
+animation = "Idle-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=13]
+animation = "Kick"
+
+[sub_resource type="AnimationNodeAnimation" id=14]
+animation = "Punch"
+
+[sub_resource type="AnimationNodeAnimation" id=15]
+animation = "Run-loop"
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "Shoot"
 
 [sub_resource type="AnimationNodeAnimation" id=17]
 animation = "Walk-loop"
 
 [sub_resource type="AnimationNodeAnimation" id=18]
-animation = "Kick"
-
-[sub_resource type="AnimationNodeAnimation" id=19]
-animation = "Walk-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=20]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeAnimation" id=21]
-animation = "Walk-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=1]
-animation = "Crouch"
-
-[sub_resource type="AnimationNodeAnimation" id=2]
-animation = "Death"
-
-[sub_resource type="AnimationNodeAnimation" id=25]
-animation = "Idle-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=4]
-animation = "Kick"
-
-[sub_resource type="AnimationNodeAnimation" id=5]
-animation = "Punch"
-
-[sub_resource type="AnimationNodeAnimation" id=22]
-animation = "Run-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=7]
-animation = "Shoot"
-
-[sub_resource type="AnimationNodeAnimation" id=8]
-animation = "Walk-loop"
-
-[sub_resource type="AnimationNodeAnimation" id=23]
 animation = "Attack"
 
-[sub_resource type="AnimationNodeBlend2" id=24]
+[sub_resource type="AnimationNodeBlend2" id=19]
 
-[sub_resource type="AnimationNodeBlend2" id=12]
+[sub_resource type="AnimationNodeBlend2" id=20]
 filter_enabled = true
 filters = [ "Root/Skeleton:Chest", "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:Spine", "Root/Skeleton:UpperChest" ]
 
-[sub_resource type="AnimationNodeBlend2" id=13]
+[sub_resource type="AnimationNodeBlend2" id=21]
 filter_enabled = true
 filters = [ "Root/Skeleton:Chest", "Root/Skeleton:Head", "Root/Skeleton:LeftArm", "Root/Skeleton:LeftForeArm", "Root/Skeleton:LeftHand", "Root/Skeleton:LeftHandIndex1", "Root/Skeleton:LeftHandIndex2", "Root/Skeleton:LeftHandIndex3", "Root/Skeleton:LeftHandThumb1", "Root/Skeleton:LeftHandThumb2", "Root/Skeleton:LeftShoulder", "Root/Skeleton:Neck", "Root/Skeleton:RightArm", "Root/Skeleton:RightForeArm", "Root/Skeleton:RightHand", "Root/Skeleton:RightHandIndex1", "Root/Skeleton:RightHandIndex2", "Root/Skeleton:RightHandIndex3", "Root/Skeleton:RightHandThumb1", "Root/Skeleton:RightHandThumb2", "Root/Skeleton:RightShoulder", "Root/Skeleton:Spine", "Root/Skeleton:UpperChest" ]
 
-[sub_resource type="AnimationNodeTransition" id=14]
+[sub_resource type="AnimationNodeTransition" id=22]
 input_count = 12
 xfade_time = 0.5
 input_0/name = "Attack"
@@ -1047,66 +1047,66 @@ input_10/auto_advance = false
 input_11/name = "ShootWalk"
 input_11/auto_advance = false
 
-[sub_resource type="AnimationNodeBlendTree" id=15]
+[sub_resource type="AnimationNodeBlendTree" id=23]
 graph_offset = Vector2( -210.213, 573.645 )
-nodes/Animation/node = SubResource( 23 )
+nodes/Animation/node = SubResource( 18 )
 nodes/Animation/position = Vector2( 186.667, 106.667 )
-"nodes/Animation 10/node" = SubResource( 16 )
+"nodes/Animation 10/node" = SubResource( 4 )
 "nodes/Animation 10/position" = Vector2( -40, 1040 )
-"nodes/Animation 11/node" = SubResource( 17 )
+"nodes/Animation 11/node" = SubResource( 5 )
 "nodes/Animation 11/position" = Vector2( -40, 1146.67 )
-"nodes/Animation 12/node" = SubResource( 18 )
+"nodes/Animation 12/node" = SubResource( 6 )
 "nodes/Animation 12/position" = Vector2( -40, 1253.33 )
-"nodes/Animation 13/node" = SubResource( 19 )
+"nodes/Animation 13/node" = SubResource( 7 )
 "nodes/Animation 13/position" = Vector2( -40, 1360 )
-"nodes/Animation 14/node" = SubResource( 20 )
+"nodes/Animation 14/node" = SubResource( 8 )
 "nodes/Animation 14/position" = Vector2( -40, 1466.67 )
-"nodes/Animation 15/node" = SubResource( 21 )
+"nodes/Animation 15/node" = SubResource( 9 )
 "nodes/Animation 15/position" = Vector2( -40, 1573.33 )
-"nodes/Animation 2/node" = SubResource( 1 )
+"nodes/Animation 2/node" = SubResource( 10 )
 "nodes/Animation 2/position" = Vector2( 173.333, 213.333 )
-"nodes/Animation 3/node" = SubResource( 2 )
+"nodes/Animation 3/node" = SubResource( 11 )
 "nodes/Animation 3/position" = Vector2( 173.333, 320 )
-"nodes/Animation 4/node" = SubResource( 25 )
+"nodes/Animation 4/node" = SubResource( 12 )
 "nodes/Animation 4/position" = Vector2( 173.333, 426.667 )
-"nodes/Animation 5/node" = SubResource( 4 )
+"nodes/Animation 5/node" = SubResource( 13 )
 "nodes/Animation 5/position" = Vector2( 173.333, 533.333 )
-"nodes/Animation 6/node" = SubResource( 5 )
+"nodes/Animation 6/node" = SubResource( 14 )
 "nodes/Animation 6/position" = Vector2( 173.333, 640 )
-"nodes/Animation 7/node" = SubResource( 22 )
+"nodes/Animation 7/node" = SubResource( 15 )
 "nodes/Animation 7/position" = Vector2( 173.333, 746.667 )
-"nodes/Animation 8/node" = SubResource( 7 )
+"nodes/Animation 8/node" = SubResource( 16 )
 "nodes/Animation 8/position" = Vector2( 173.333, 853.333 )
-"nodes/Animation 9/node" = SubResource( 8 )
+"nodes/Animation 9/node" = SubResource( 17 )
 "nodes/Animation 9/position" = Vector2( 173.333, 960 )
-nodes/KickWalk/node = SubResource( 24 )
+nodes/KickWalk/node = SubResource( 19 )
 nodes/KickWalk/position = Vector2( 173.333, 1266.67 )
-nodes/PunchWalk/node = SubResource( 12 )
+nodes/PunchWalk/node = SubResource( 20 )
 nodes/PunchWalk/position = Vector2( 173.333, 1093.33 )
-nodes/ShootWalk/node = SubResource( 13 )
+nodes/ShootWalk/node = SubResource( 21 )
 nodes/ShootWalk/position = Vector2( 173.333, 1440 )
-nodes/Transition/node = SubResource( 14 )
+nodes/Transition/node = SubResource( 22 )
 nodes/Transition/position = Vector2( 546.667, 653.333 )
 nodes/output/position = Vector2( 893.333, 880 )
-node_connections = [ "output", 0, "Transition", "Transition", 0, "Animation", "Transition", 1, "Animation 2", "Transition", 2, "Animation 3", "Transition", 3, "Animation 4", "Transition", 4, "Animation 5", "Transition", 5, "Animation 6", "Transition", 6, "Animation 7", "Transition", 7, "Animation 8", "Transition", 8, "Animation 9", "Transition", 9, "PunchWalk", "Transition", 10, "KickWalk", "Transition", 11, "ShootWalk", "ShootWalk", 0, "Animation 15", "ShootWalk", 1, "Animation 14", "PunchWalk", 0, "Animation 11", "PunchWalk", 1, "Animation 10", "KickWalk", 0, "Animation 13", "KickWalk", 1, "Animation 12" ]
+node_connections = [ "output", 0, "Transition", "Transition", 0, "Animation", "Transition", 1, "Animation 2", "Transition", 2, "Animation 3", "Transition", 3, "Animation 4", "Transition", 4, "Animation 5", "Transition", 5, "Animation 6", "Transition", 6, "Animation 7", "Transition", 7, "Animation 8", "Transition", 8, "Animation 9", "Transition", 9, "PunchWalk", "Transition", 10, "KickWalk", "Transition", 11, "ShootWalk", "PunchWalk", 0, "Animation 11", "PunchWalk", 1, "Animation 10", "ShootWalk", 0, "Animation 15", "ShootWalk", 1, "Animation 14", "KickWalk", 0, "Animation 13", "KickWalk", 1, "Animation 12" ]
 
 [node name="characterLargeMale" instance=ExtResource( 1 )]
+transform = Transform( 0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0, 0 )
 script = ExtResource( 2 )
 
 [node name="Root" parent="." index="0"]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 
 [node name="characterLargeMale" parent="Root/Skeleton" index="0"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 material/0 = ExtResource( 3 )
 
 [node name="AnimationPlayer" parent="." index="1"]
-anims/Idle-loop = SubResource( 6 )
-anims/Run-loop = SubResource( 9 )
-anims/Walk-loop = SubResource( 11 )
+anims/Idle-loop = SubResource( 1 )
+anims/Run-loop = SubResource( 2 )
+anims/Walk-loop = SubResource( 3 )
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
-tree_root = SubResource( 15 )
+tree_root = SubResource( 23 )
 anim_player = NodePath("../AnimationPlayer")
 active = true
 parameters/KickWalk/blend_amount = 0.75
