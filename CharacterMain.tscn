@@ -1366,7 +1366,7 @@ input_10/name = "CrouchWalkShoot"
 input_10/auto_advance = false
 
 [sub_resource type="AnimationNodeBlendTree" id=24]
-graph_offset = Vector2( 0, 131.333 )
+graph_offset = Vector2( 0, 51.9997 )
 nodes/Blend2/node = SubResource( 8 )
 nodes/Blend2/position = Vector2( 186.667, 640 )
 "nodes/Blend2 2/node" = SubResource( 6 )
@@ -1404,7 +1404,7 @@ nodes/Shoot/position = Vector2( -226.667, 600 )
 nodes/Transition/node = SubResource( 23 )
 nodes/Transition/position = Vector2( 373.333, 40 )
 nodes/output/position = Vector2( 573.333, 40 )
-node_connections = [ "output", 0, "Transition", "Transition", 0, "Crouch 2", "Transition", 1, "CrouchIdle", "Transition", 2, "CrouchWalk", "Transition", 3, "Death", "Transition", 4, "Idle", "Transition", 5, "Interact", "Transition", 6, "Run", "Transition", 7, "Shoot", "Transition", 8, "Blend2", "Transition", 9, "Blend2 2", "Transition", 10, "Blend2 3", "Blend2", 0, "Run 3", "Blend2", 1, "Shoot 2", "Blend2 3", 0, "CrouchWalk 2", "Blend2 3", 1, "Shoot 4", "Blend2 2", 0, "CrouchIdle 2", "Blend2 2", 1, "Shoot 3" ]
+node_connections = [ "output", 0, "Transition", "Blend2 3", 0, "CrouchWalk 2", "Blend2 3", 1, "Shoot 4", "Blend2", 0, "Run 3", "Blend2", 1, "Shoot 2", "Blend2 2", 0, "CrouchIdle 2", "Blend2 2", 1, "Shoot 3", "Transition", 0, "Crouch 2", "Transition", 1, "CrouchIdle", "Transition", 2, "CrouchWalk", "Transition", 3, "Death", "Transition", 4, "Idle", "Transition", 5, "Interact", "Transition", 6, "Run", "Transition", 7, "Shoot", "Transition", 8, "Blend2", "Transition", 9, "Blend2 2", "Transition", 10, "Blend2 3" ]
 
 [node name="Character" instance=ExtResource( 1 )]
 

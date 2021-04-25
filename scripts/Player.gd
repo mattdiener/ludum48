@@ -37,6 +37,12 @@ enum PlayerAnimations {
 	CROUCH_WALK_SHOOT
 }
 
+func is_dark():
+	return false
+	
+func is_moving():
+	return moving
+
 func get_input():
 	var tmp_direction = Vector3.ZERO
 

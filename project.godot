@@ -16,12 +16,15 @@ config/icon="res://icon.png"
 
 [display]
 
+window/size/width=1600
+window/size/height=900
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 
 [global]
 
 sce=false
+resoultion=false
 
 [input]
 

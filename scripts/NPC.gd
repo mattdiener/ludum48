@@ -43,6 +43,10 @@ const minStand = 5.0
 const maxStand = 10.0
 const rotationThreshold = 0.05
 const distanceThreshold = 0.25
+const viewDistance = 8.0
+const hearDistance = 3.0
+const fov = 1.0 #radians
+const cast_dist_tolerance = 0.3
 
 #objects
 var navmesh = null
@@ -50,6 +54,7 @@ var room = null
 var player = null
 onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale")
 onready var character_animation = get_node("characterLargeMale/AnimationTree")
+onready var indicator = get_node("Indicator")
 onready var character = self
 
 #Movement
@@ -91,10 +96,15 @@ func _ready():
 		room = get_node(roomPath)
 
 	if playerPath != null:
-		player = get_node(playerPath)
+		player = get_node(playerPath) 
+	
+	direction = Vector3(randf(), 0, randf()).normalized()
+	
+	character.look_at(global_transform.origin + direction, Vector3(0,1,0))
+	indicator.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	# Do different control based on state
 	if currentState == NPCState.Patrol:
 		handle_patrol(delta)
@@ -113,7 +123,7 @@ func _process(delta):
 
 	var currentMoveSpeed = 0
 	if moving:
-		character.look_at(translation - direction, Vector3.UP)
+		character.look_at(global_transform.origin + direction, Vector3(0,1,0))
 		currentMoveSpeed = walkSpeed
 		if running:
 			currentMoveSpeed = runSpeed
@@ -124,12 +134,39 @@ func _process(delta):
 	move_and_collide(velocity * delta)
 
 	if navmesh:
-		var room_offset = navmesh.get_parent().translation
-		var room_coord = translation - room_offset
-		var new_room_coord = navmesh.get_closest_point(room_coord)
-		translation = new_room_coord + room_offset
-
+		translation = navmesh.get_closest_point(translation)
+	
 	derive_animation_state()
+
+func can_see_player():
+	# first find out if player is in fov
+	var vec_to_player = player.global_transform.origin - global_transform.origin
+	if direction.angle_to(vec_to_player) > fov/2.0:
+		return false
+	
+	if vec_to_player.length() > viewDistance:
+		return false
+	
+	# now cast a ray to the player and see if we hit anything besides the player
+	var space_state = get_world().direct_space_state
+	var ray_cast = space_state.intersect_ray(global_transform.origin, player.global_transform.origin)
+	
+	if ray_cast and "position" in ray_cast:
+		var cast_player_dist = ray_cast.position.distance_to(player.global_transform.origin)
+		print(cast_player_dist)
+		if cast_player_dist > cast_dist_tolerance:
+			return false
+		
+	# if player is in sight, check to see whether they are "hidden"
+	if player.is_moving() or not player.is_dark():
+		return true
+		
+	return false
+
+func can_hear_player():
+	if player.is_moving() and player.global_transform.origin.distance_to(global_transform.origin) <= hearDistance:
+		return true
+	return false
 
 func near_destination():
 	var dist = translation.distance_to(destination.translation)
@@ -148,6 +185,11 @@ func handle_patrol(delta):
 		enter_patrol()
 	lastState = currentState
 
+	if can_see_player():
+		indicator.show()
+	else:
+		indicator.hide()
+	
 	if destination == null:
 		exit_patrol()
 		return
@@ -159,8 +201,8 @@ func handle_patrol(delta):
 	var tra = translation
 	var pra = player.translation
 	var rra = room.translation
-
-	direction = navmesh.get_simple_path(translation, destination.translation - room.translation)[1] - translation
+	
+	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
 	direction = direction.normalized()
 	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
 	moving = true
@@ -188,7 +230,12 @@ func handle_stand(delta):
 	if lastState != currentState:
 		enter_stand()
 	lastState = currentState
-
+	
+	if can_see_player():
+		indicator.show()
+	else:
+		indicator.hide()
+	
 	if stateTimer >= stateMaxTime:
 		exit_stand()
 
