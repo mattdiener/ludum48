@@ -59,7 +59,7 @@ func get_input():
 				direction = (
 					(forward_strafe_sign * forward_strafe_direction) +
 					(side_strafe_sign * side_strafe_direction)
-				)
+				).normalized()
 		else:
 			moving = true
 			direction = tmp_direction.normalized()
