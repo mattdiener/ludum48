@@ -10,8 +10,8 @@ var base_size;
 func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3):
 	if prev_room:
 		# Focus on room
-		var prev_room_center = room_manager.get_room_center(prev_room)
-		var room_center = room_manager.get_room_center(room)
+		var prev_room_center = prev_room.get_center()
+		var room_center = room.get_center()
 		var cam_dest = translation - (prev_room_center - room_center)
 		tween.interpolate_property(
 			self,
@@ -24,7 +24,7 @@ func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vec
 		)
 
 		# Fit room in frame
-		var room_diagonal = room_manager.get_room_diagonal(room)
+		var room_diagonal = room.get_diagonal_len()
 		var scale = max(floor(room_diagonal / UNITS_PER_SCALE), 1)
 		var new_size = base_size * scale
 		tween.interpolate_property(
