@@ -42,10 +42,10 @@ export(Style) var style = 0
 const minStand = 5.0
 const maxStand = 10.0
 const rotationThreshold = 0.05
-const distanceThreshold = 0.25
+const distanceThreshold = 1.0
 const viewDistance = 8.0
 const hearDistance = 3.0
-const fov = 1.0 #radians
+const fov = 1.4 #radians
 const cast_dist_tolerance = 0.3
 
 #objects
@@ -54,6 +54,7 @@ var room = null
 var player = null
 onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale")
 onready var character_animation = get_node("characterLargeMale/AnimationTree")
+onready var eye_position = get_node("EyePosition")
 onready var indicator = get_node("Indicator")
 onready var character = self
 
@@ -144,16 +145,19 @@ func can_see_player():
 	if direction.angle_to(vec_to_player) > fov/2.0:
 		return false
 	
+	# if the player is close enough, we don't want to bother raycasting (it won't work)
+	if vec_to_player.length() < hearDistance:
+		return true
+	
 	if vec_to_player.length() > viewDistance:
 		return false
 	
 	# now cast a ray to the player and see if we hit anything besides the player
 	var space_state = get_world().direct_space_state
-	var ray_cast = space_state.intersect_ray(global_transform.origin, player.global_transform.origin)
+	var ray_cast = space_state.intersect_ray(eye_position.global_transform.origin, player.global_transform.origin)
 	
 	if ray_cast and "position" in ray_cast:
 		var cast_player_dist = ray_cast.position.distance_to(player.global_transform.origin)
-		print(cast_player_dist)
 		if cast_player_dist > cast_dist_tolerance:
 			return false
 		
@@ -208,7 +212,6 @@ func handle_patrol(delta):
 	moving = true
 
 func enter_patrol():
-	print("ENTER PATROL")
 	if room != null:
 		var tries = 0
 		while destination == null or near_destination():
@@ -218,11 +221,9 @@ func enter_patrol():
 
 			var waypoints = room.get_waypoints()
 			destination = waypoints[randi() % waypoints.size()]
-			print(destination)
 			tries += 1
 
 func exit_patrol():
-	print("EXIT PATROL")
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
 
@@ -242,12 +243,10 @@ func handle_stand(delta):
 	stateTimer += delta
 
 func enter_stand():
-	print("ENTER STAND")
 	stateTimer = 0
 	stateMaxTime = randf() * (maxStand - minStand) + minStand
 
 func exit_stand():
-	print("EXIT STAND")
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
 

@@ -26,3 +26,6 @@ shape = SubResource( 1 )
 transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 1.362, 0 )
 mesh = SubResource( 2 )
 material/0 = SubResource( 3 )
+
+[node name="EyePosition" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01548, -0.268466 )

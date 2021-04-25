@@ -26,6 +26,9 @@ onready var character_animation = get_node("Character/Animation")
 onready var character = get_node("Character")
 onready var weapon = find_node("Weapon")
 
+onready var collision = get_node("CollisionShape")
+onready var crouchCollision = get_node("CrouchCollisionShape")
+
 enum PlayerAnimations {
 	CROUCH,
 	CROUCH_IDLE,
@@ -92,9 +95,14 @@ func get_input():
 
 func handle_crouch(delta):
 	if not crouching:
+		collision.disabled = false
+		crouchCollision.disabled = true
 		wasCrouching = false
 		return
-
+	
+	collision.disabled = true
+	crouchCollision.disabled = false
+	
 	if wasCrouching:
 		crouchFrames += delta
 	else:
