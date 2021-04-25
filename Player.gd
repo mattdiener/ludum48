@@ -107,7 +107,10 @@ func _physics_process(delta):
 
 	var nav_mesh = room_manager.get_active_navmesh()
 	if nav_mesh:
-		translation = nav_mesh.get_closest_point(translation)
+		var room_offset = nav_mesh.get_parent().translation
+		var room_coord = translation - room_offset
+		var new_room_coord = nav_mesh.get_closest_point(room_coord)
+		translation = new_room_coord + room_offset
 		
 	derive_animation_state()
 

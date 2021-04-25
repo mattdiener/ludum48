@@ -39,7 +39,7 @@ material/7 = null
 material/8 = null
 material/9 = null
 
-[node name="Exits" type="Node" parent="."]
+[node name="Exits" type="Spatial" parent="."]
 
 [node name="Exit_Left" type="Area" parent="Exits"]
 script = ExtResource( 2 )
