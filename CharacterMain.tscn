@@ -1374,6 +1374,9 @@ node_connections = [ "output", 0, "FinalBlend", "FinalBlend", 0, "MovementTransi
 
 [node name="Character" instance=ExtResource( 1 )]
 
+[node name="Skeleton" parent="Root" index="0"]
+bones/31/bound_children = [ NodePath("RightHand") ]
+
 [node name="characterMedium" parent="Root/Skeleton" index="0"]
 material/0 = SubResource( 1 )
 

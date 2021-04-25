@@ -3,8 +3,8 @@ extends Area
 signal exited_left(exit_position)
 signal exited_right(exit_position)
 
-func _on_entered(_body: Node):
-	if "is_player" in _body and _body.is_player:
+func _on_entered(body: Node):
+	if "is_player" in body and body.is_player and body.is_alive():
 		emit_signal("exited_left", $Shape.translation)
 
 func _ready():

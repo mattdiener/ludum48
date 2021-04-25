@@ -2,6 +2,8 @@ extends KinematicBody
 
 var is_player = true
 
+var hp = 100
+
 var runMoveSpeed = 5.0
 var moveSpeed = 3.0
 var crouchMoveSpeed = 1.0
@@ -49,7 +51,7 @@ func is_dark():
 
 func is_moving():
 	return moving
-	
+
 func is_crouching():
 	return crouching
 
@@ -103,10 +105,10 @@ func handle_crouch(delta):
 		crouchCollision.disabled = true
 		wasCrouching = false
 		return
-	
+
 	collision.disabled = true
 	crouchCollision.disabled = false
-	
+
 	if wasCrouching:
 		crouchFrames += delta
 	else:
@@ -122,16 +124,19 @@ func derive_animation_state():
 	var move_animation = PlayerMovementAnimations.IDLE
 	var interact_animation = PlayerInteractionAnimations.IDLE
 
-	if crouching:
-		if enteringCrouch:
-			move_animation = PlayerMovementAnimations.CROUCH
+	if is_alive():
+		if crouching:
+			if enteringCrouch:
+				move_animation = PlayerMovementAnimations.CROUCH
+			elif moving:
+				move_animation = PlayerMovementAnimations.CROUCH_WALK
 		elif moving:
-			move_animation = PlayerMovementAnimations.CROUCH_WALK
-	elif moving:
-		move_animation = PlayerMovementAnimations.RUN
+			move_animation = PlayerMovementAnimations.RUN
 
-	if weapon.shooting:
-		interact_animation = PlayerInteractionAnimations.SHOOT
+		if weapon.shooting:
+			interact_animation = PlayerInteractionAnimations.SHOOT
+	else:
+		move_animation = PlayerMovementAnimations.DEATH
 
 	character_animation.set("parameters/MovementTransition/current", move_animation)
 	character_animation.set("parameters/InteractionTransition/current", interact_animation)
@@ -142,9 +147,19 @@ func derive_animation_state():
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
 func get_look_direction():
-	if strafing: 
+	if strafing:
 		return forward_strafe_direction.normalized()
 	return direction.normalized()
+
+func is_alive():
+	return hp > 0
+
+func take_damage(amount: float):
+	hp -= amount
+
+	if hp <= 0:
+		player_has_control = false
+
 
 func move_to(position: Vector3):
 	player_has_control = false

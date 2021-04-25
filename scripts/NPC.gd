@@ -98,6 +98,8 @@ var stateMaxTime = 0
 var detectedTime = 0
 var destination = null
 
+var hp = 100
+
 func init(type, room, player, style):
 	self.type = type
 	self.room = room
@@ -116,12 +118,12 @@ func _ready():
 		room = get_node(roomPath)
 
 	if playerPath != null:
-		player = get_node(playerPath) 
-	
+		player = get_node(playerPath)
+
 	direction = Vector3(randf(), 0, randf()).normalized()
-	
+
 	character.look_at(global_transform.origin + direction, Vector3(0,1,0))
-		
+
 	indicator.hide()
 	weapon.bind_parent(self)
 
@@ -149,67 +151,77 @@ func _physics_process(delta):
 	elif currentState == NPCState.Alert:
 		handle_alert(delta)
 
-	if strafing and not punching and not kicking:
-		var can_see = can_see_player()
-		if (can_see and not sawPlayer):
-			weapon.begin_shoot()
-			sawPlayer = true
-		elif (sawPlayer and not can_see):
-			weapon.end_shoot()
-			sawPlayer = false
+	if is_alive():
+		if strafing and not punching and not kicking:
+			var can_see = can_see_player()
+			if (can_see and not sawPlayer):
+				weapon.begin_shoot()
+				sawPlayer = true
+			elif (sawPlayer and not can_see):
+				weapon.end_shoot()
+				sawPlayer = false
 
-	var currentMoveSpeed = 0
-	
-	if strafing:
-			character.look_at(player.global_transform.origin, Vector3(0,1,0))
-	if moving:
-		if not strafing:
-			character.look_at(global_transform.origin + direction, Vector3(0,1,0))
-		currentMoveSpeed = walkSpeed
-		if running:
-			currentMoveSpeed = runSpeed
+		var currentMoveSpeed = 0
 
-	velocity.x = direction.x * currentMoveSpeed
-	velocity.z = direction.z * currentMoveSpeed
+		if strafing:
+				character.look_at(player.global_transform.origin, Vector3(0,1,0))
+		if moving:
+			if not strafing:
+				# TODO: fix "look_at_from_position: Node origin and target are in the same position, look_at() failed."
+				character.look_at(global_transform.origin + direction, Vector3(0,1,0))
+			currentMoveSpeed = walkSpeed
+			if running:
+				currentMoveSpeed = runSpeed
 
-	move_and_collide(velocity * delta)
+		velocity.x = direction.x * currentMoveSpeed
+		velocity.z = direction.z * currentMoveSpeed
 
-	if navmesh:
-		translation = navmesh.get_closest_point(translation)
-	
+		move_and_collide(velocity * delta)
+
+		if navmesh:
+			translation = navmesh.get_closest_point(translation)
+
 	derive_animation_state()
 
 func get_look_direction():
-	if strafing: 
+	if strafing:
 		return (player.global_transform.origin - global_transform.origin).normalized()
 	return direction.normalized()
+
+func is_alive():
+	return hp > 0
+
+func take_damage(amount: float):
+	hp -= amount
+	if hp <= 0:
+		currentState = NPCState.None
 
 func can_see_player():
 	# first find out if player is in fov
 	var vec_to_player = player.global_transform.origin - global_transform.origin
 	if direction.angle_to(vec_to_player) > fov/2.0:
 		return false
-	
+
 	# if the player is close enough, we don't want to bother raycasting (it won't work)
 	if vec_to_player.length() < hearDistance:
 		return true
-	
+
 	if vec_to_player.length() > viewDistance:
 		return false
-	
+
 	# now cast a ray to the player and see if we hit anything besides the player
 	var space_state = get_world().direct_space_state
 	var ray_cast = space_state.intersect_ray(eye_position.global_transform.origin, player.global_transform.origin)
-	
+
 	if ray_cast and "position" in ray_cast:
 		var cast_player_dist = ray_cast.position.distance_to(player.global_transform.origin)
 		if cast_player_dist > cast_dist_tolerance:
 			return false
-		
+
 	# if player is in sight, check to see whether they are "hidden"
 	if player.is_moving() or not player.is_dark():
 		return true
-		
+
 	return false
 
 func can_hear_player():
@@ -224,7 +236,7 @@ func near_destination():
 		return true
 
 	return false
-	
+
 func near_cover_destination():
 	var dist = translation.distance_to(destination.translation)
 
@@ -235,24 +247,24 @@ func near_cover_destination():
 
 func react_to_player(delta):
 	var detected = false
-	
+
 	if can_see_player():
 		detected = true
-		
+
 	if can_hear_player():
 		detected = true
-	
+
 	if detected:
 		indicator.show()
 		detectedTime += delta
 	else:
 		indicator.hide()
 		detectedTime = 0
-	
+
 	if detectedTime >= detectedMaxTime:
 		currentState = NPCState.Alert
 		return true
-	
+
 	return false
 
 func handle_patrol(delta):
@@ -266,7 +278,7 @@ func handle_patrol(delta):
 
 	if react_to_player(delta):
 		return
-	
+
 	if destination == null:
 		exit_patrol()
 		return
@@ -278,7 +290,7 @@ func handle_patrol(delta):
 	var tra = translation
 	var pra = player.translation
 	var rra = room.translation
-	
+
 	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
 	direction = direction.normalized()
 	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
@@ -300,7 +312,7 @@ func exit_patrol():
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
 	stateTimer = 0
-	
+
 func handle_seek_cover(delta):
 	moving = false
 	running = false
@@ -309,7 +321,7 @@ func handle_seek_cover(delta):
 	if lastState != currentState:
 		enter_seek_cover()
 	lastState = currentState
-	
+
 	if destination == null:
 		exit_alert()
 		return
@@ -317,7 +329,7 @@ func handle_seek_cover(delta):
 	if near_cover_destination():
 		exit_seek_cover()
 		return
-	
+
 	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
 	direction = direction.normalized()
 	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
@@ -339,7 +351,7 @@ func enter_seek_cover():
 func exit_seek_cover():
 	currentState = NPCState.Cover
 	stateTimer = 0
-	
+
 func handle_cover(delta):
 	moving = false
 	running = false
@@ -349,7 +361,7 @@ func handle_cover(delta):
 	if lastState != currentState:
 		enter_cover()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_cover()
 		return
@@ -375,7 +387,7 @@ func handle_stand_cover(delta):
 	if lastState != currentState:
 		enter_stand_cover()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_stand_cover()
 		return
@@ -401,7 +413,7 @@ func handle_punch(delta):
 	if lastState != currentState:
 		enter_punch()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_punch()
 		return
@@ -429,7 +441,7 @@ func handle_kick(delta):
 	if lastState != currentState:
 		enter_kick()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_kick()
 		return
@@ -456,7 +468,7 @@ func handle_strafe(delta):
 	if lastState != currentState:
 		enter_strafe()
 	lastState = currentState
-	
+
 	if destination == null:
 		exit_strafe()
 		return
@@ -468,7 +480,7 @@ func handle_strafe(delta):
 	var tra = translation
 	var pra = player.translation
 	var rra = room.translation
-	
+
 	direction = navmesh.get_simple_path(translation, destination.translation)[1] - translation
 	direction = direction.normalized()
 	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
@@ -502,11 +514,11 @@ func handle_chase(delta):
 		enter_chase()
 		lastState = currentState
 		return
-	
+
 	if player.global_transform.origin.distance_to(global_transform.origin) <= meleeDistance:
 		exit_chase_with_melee()
 		return
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_chase()
 		return
@@ -515,7 +527,7 @@ func handle_chase(delta):
 	var tra = translation
 	var pra = player.translation
 	var rra = room.translation
-	
+
 	direction = navmesh.get_simple_path(translation, player.global_transform.origin - room.global_transform.origin)[1] - translation
 	direction = direction.normalized()
 	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
@@ -530,7 +542,7 @@ func exit_chase():
 	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover]
 	currentState = exit_states[randi() % exit_states.size()]
 	stateTimer = 0
-	
+
 func exit_chase_with_melee():
 	var exit_states = [NPCState.Punch, NPCState.Kick]
 	currentState = exit_states[randi() % exit_states.size()]
@@ -540,10 +552,10 @@ func handle_stand(delta):
 	if lastState != currentState:
 		enter_stand()
 	lastState = currentState
-	
+
 	if react_to_player(delta):
 		return
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_stand()
 
@@ -562,7 +574,7 @@ func handle_alert(delta):
 	if lastState != currentState:
 		enter_alert()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_alert()
 		return
@@ -583,28 +595,31 @@ func exit_alert():
 func derive_animation_state():
 	var move_animation = PlayerMovementAnimations.IDLE
 	var interact_animation = PlayerInteractionAnimations.IDLE
-	
-	if alerted:
-		move_animation = PlayerMovementAnimations.ATTACK
-	elif crouching:
-		move_animation = PlayerMovementAnimations.CROUCH
-	elif punching:
-		move_animation = PlayerMovementAnimations.PUNCH
-	elif kicking:
-		move_animation = PlayerMovementAnimations.KICK
-	elif moving and running:
-		move_animation = PlayerMovementAnimations.RUN
-	elif moving:
-		move_animation = PlayerMovementAnimations.WALK
+
+	if is_alive():
+		if alerted:
+			move_animation = PlayerMovementAnimations.ATTACK
+		elif crouching:
+			move_animation = PlayerMovementAnimations.CROUCH
+		elif punching:
+			move_animation = PlayerMovementAnimations.PUNCH
+		elif kicking:
+			move_animation = PlayerMovementAnimations.KICK
+		elif moving and running:
+			move_animation = PlayerMovementAnimations.RUN
+		elif moving:
+			move_animation = PlayerMovementAnimations.WALK
+		else:
+			move_animation = PlayerMovementAnimations.IDLE
+
+		if weapon.shooting:
+			interact_animation = PlayerInteractionAnimations.SHOOT
 	else:
-		move_animation = PlayerMovementAnimations.IDLE
-	
-	if weapon.shooting:
-		interact_animation = PlayerInteractionAnimations.SHOOT
-	
+		move_animation = PlayerMovementAnimations.DEATH
+
 	character_animation.set("parameters/MovementTransition/current", move_animation)
 	character_animation.set("parameters/InteractionTransition/current", interact_animation)
-	
+
 	var blend = 0.0001  # HACK. Cannot set to 0
 	if interact_animation != PlayerInteractionAnimations.IDLE:
 		blend = 1
