@@ -1,6 +1,6 @@
 extends KinematicBody
 
-const MOVE_SPEED = 20
+const MOVE_SPEED = 10
 const RANGE = 10
 
 var velocity = Vector3.ZERO

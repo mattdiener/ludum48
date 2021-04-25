@@ -1344,7 +1344,7 @@ animation = "Run-loop"
 animation = "Shoot"
 
 [sub_resource type="AnimationNodeBlendTree" id=18]
-graph_offset = Vector2( 0, -147.049 )
+graph_offset = Vector2( -47.5201, 34.7159 )
 "nodes/Crouch 2/node" = SubResource( 6 )
 "nodes/Crouch 2/position" = Vector2( -253.333, -146.667 )
 nodes/CrouchIdle/node = SubResource( 7 )
