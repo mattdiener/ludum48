@@ -11,7 +11,7 @@ enum EntranceDirection {
 }
 
 onready var loaded_rooms = get_node("LoadedRooms")
-onready var player = get_node("/Main/Player")
+onready var player = get_node("../Player")
 
 var active_room = null
 var room_scene_files = []

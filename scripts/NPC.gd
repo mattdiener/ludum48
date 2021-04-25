@@ -2,7 +2,7 @@ extends KinematicBody
 
 enum Type { Patrol, Boss, Idle }
 enum Style { Alien, Animal, Military, Robot, Zombie }
-enum NPCState { Patrol, Stand, Chase, Cover, Punch, Kick, Strafe }
+enum NPCState { None, Patrol, Stand, Chase, Cover, Punch, Kick, Strafe }
 
 const ALIEN_MATERIALS = ["res://res/material/alienA.tres", "res://res/material/alienB.tres"]
 const ANIMAL_MATERIALS = ["res://res/material/animalA.tres", "res://res/material/animalB.tres", "res://res/material/animalC.tres", "res://res/material/animalD.tres", "res://res/material/animalG.tres", "res://res/material/animalJ.tres"]
@@ -38,6 +38,13 @@ export(NodePath) var roomPath = null
 export(NodePath) var playerPath = null
 export(Style) var style = 0
 
+#CONSTS
+const minStand = 5.0
+const maxStand = 10.0
+const rotationThreshold = 0.05
+const distanceThreshold = 0.25
+
+#objects
 var navmesh = null
 var room = null
 var player = null 
@@ -45,6 +52,7 @@ onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale
 onready var character_animation = get_node("characterLargeMale/AnimationTree")
 onready var character = self
 
+#Movement
 var currentState : int = NPCState.Stand
 var runSpeed = 2.8
 var walkSpeed = 1.0
@@ -59,15 +67,15 @@ var crouchTime = 0.416
 var running = false
 
 # AI State machine data
-var lastState = null
+var lastState = NPCState.None
 var stateTimer = 0
 var stateMaxTime = 0
 var destination = null
 
 func init(type, room, player, style):
 	self.type = type
-	self.room = roomPath
-	self.player = playerPath
+	self.room = room
+	self.player = player
 	self.style = style
 
 func _ready():
@@ -89,9 +97,9 @@ func _ready():
 func _process(delta):
 	# Do different control based on state
 	if currentState == NPCState.Patrol:
-		handle_patrol()
+		handle_patrol(delta)
 	elif currentState == NPCState.Stand:
-		pass
+		handle_stand(delta)
 	elif currentState == NPCState.Chase:
 		pass
 	elif currentState == NPCState.Cover:
@@ -103,16 +111,15 @@ func _process(delta):
 	elif currentState == NPCState.Strafe:
 		pass
 
-	var dir = direction		
 	var currentMoveSpeed = 0
 	if moving:
-		character.look_at(translation - dir, Vector3(0,1,0))
+		character.look_at(translation - direction, Vector3(0,1,0))
 		currentMoveSpeed = walkSpeed
 		if running:
 			currentMoveSpeed = runSpeed
 
-	velocity.x = dir.x * currentMoveSpeed
-	velocity.z = dir.z * currentMoveSpeed
+	velocity.x = direction.x * currentMoveSpeed
+	velocity.z = direction.z * currentMoveSpeed
 
 	move_and_collide(velocity * delta)
 
@@ -125,9 +132,14 @@ func _process(delta):
 	derive_animation_state()
 
 func near_destination():
+	var dist = translation.distance_to(destination.translation)
+	
+	if dist <= distanceThreshold:
+		return true
+	
 	return false
 
-func handle_patrol():
+func handle_patrol(delta):
 	moving = false
 	running = false
 	crouching = false
@@ -144,11 +156,17 @@ func handle_patrol():
 		exit_patrol()
 		return
 	
-	direction = navmesh.get_simple_path(translation, player.translation - room.translation)[0] - translation
+	var tra = translation
+	var pra = player.translation
+	var rra = room.translation
+	
+	direction = navmesh.get_simple_path(translation, destination.translation - room.translation)[1] - translation
 	direction = direction.normalized()
+	direction = direction.rotated(Vector3(0,1,0), randf()*rotationThreshold*2 - rotationThreshold)
 	moving = true
 
 func enter_patrol():
+	print("ENTER PATROL")
 	if room != null:
 		var tries = 0
 		while destination == null or near_destination():
@@ -158,9 +176,31 @@ func enter_patrol():
 			
 			var waypoints = room.get_waypoints()
 			destination = waypoints[randi() % waypoints.size()]
+			print(destination)
 			tries += 1
 
 func exit_patrol():
+	print("EXIT PATROL")
+	var exit_states = [NPCState.Stand, NPCState.Patrol]
+	currentState = exit_states[randi() % exit_states.size()]
+	
+func handle_stand(delta):
+	if lastState != currentState:
+		enter_stand()
+	lastState = currentState
+	
+	if stateTimer >= stateMaxTime:
+		exit_stand()
+		
+	stateTimer += delta
+
+func enter_stand():
+	print("ENTER STAND")
+	stateTimer = 0
+	stateMaxTime = randf() * (maxStand - minStand) + minStand
+
+func exit_stand():
+	print("EXIT STAND")
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
 
@@ -171,8 +211,10 @@ func derive_animation_state():
 		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
 	elif crouching:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_WALK)
-	elif moving:
+	elif moving and running:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.RUN)
+	elif moving:
+		character_animation.set("parameters/Transition/current", PlayerAnimations.WALK)
 	else:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
 	
