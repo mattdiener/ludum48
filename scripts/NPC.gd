@@ -57,8 +57,9 @@ const minCover = 2.0
 const maxCover = 8.0
 const punchTime = 1.2
 const kickTime = 1.2
-const punchDamage = 2
-const kickDamage = 3
+const dealDamageDelay = 0.6
+const punchDamage = 10
+const kickDamage = 15
 const meleeDistance = 0.5
 
 #objects
@@ -99,6 +100,8 @@ var detectedTime = 0
 var destination = null
 
 var hp = 100
+var prev_hp = 100
+var dealtDamage = false
 
 func init(type, room, player, style):
 	self.type = type
@@ -182,6 +185,7 @@ func _physics_process(delta):
 			translation = navmesh.get_closest_point(translation)
 
 	derive_animation_state()
+	prev_hp = hp
 
 func get_look_direction():
 	if strafing:
@@ -196,8 +200,6 @@ func take_damage(amount: float):
 
 	if hp <= 0:
 		currentState = NPCState.None
-	else:
-		currentState = NPCState.Alert
 
 func can_see_player():
 	# first find out if player is in fov
@@ -254,8 +256,8 @@ func near_cover_destination():
 func react_to_player(delta):
 	var detected = false
 
-	# If touching, alert instantly
-	if can_melee_player():
+	# If touching or hit, alert instantly
+	if can_melee_player() or hp != prev_hp:
 		currentState = NPCState.Alert
 		return true
 
@@ -425,6 +427,10 @@ func handle_punch(delta):
 		enter_punch()
 	lastState = currentState
 
+	if stateTimer >= dealDamageDelay and not dealtDamage and can_melee_player():
+		player.take_damage(kickDamage)
+		dealtDamage = true
+
 	if stateTimer >= stateMaxTime:
 		exit_punch()
 		return
@@ -435,6 +441,7 @@ func handle_punch(delta):
 	moving = true
 
 func enter_punch():
+	dealtDamage = false
 	stateTimer = 0
 	stateMaxTime = punchTime
 
@@ -453,6 +460,10 @@ func handle_kick(delta):
 		enter_kick()
 	lastState = currentState
 
+	if stateTimer >= dealDamageDelay and not dealtDamage and can_melee_player():
+		player.take_damage(kickDamage)
+		dealtDamage = true
+
 	if stateTimer >= stateMaxTime:
 		exit_kick()
 		return
@@ -463,6 +474,7 @@ func handle_kick(delta):
 	moving = true
 
 func enter_kick():
+	dealtDamage = false
 	stateTimer = 0
 	stateMaxTime = kickTime
 
@@ -635,4 +647,3 @@ func derive_animation_state():
 	if interact_animation != PlayerInteractionAnimations.IDLE:
 		blend = 1
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
-
