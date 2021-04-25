@@ -1,7 +1,6 @@
 extends Spatial
 
 const ROOMS_DIR = "res://rooms"
-const FLOOR_HEIGHT = 0.75
 
 signal room_entered(prev_room, room, entrance_position)
 
@@ -30,10 +29,10 @@ func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction 
 	if parent_exit_position and entrance_direction != EntranceDirection.NONE:
 		var entrance_node_name
 		if entrance_direction == EntranceDirection.LEFT:
-			spawn_position = right_of(active_room, parent_exit_position)
+			spawn_position = active_room.right_of(parent_exit_position)
 			entrance_node_name = "Entrance_Left"
 		else:
-			spawn_position = left_of(active_room, parent_exit_position)
+			spawn_position = active_room.left_of(parent_exit_position)
 			entrance_node_name = "Entrance_Right"
 
 		entrance_position = room.get_node(entrance_node_name).translation
@@ -78,33 +77,6 @@ func load_random_room(entrance_direction):
 			return room_scene
 		else:
 			room_scene.queue_free()
-
-func get_room_aabb(room: Spatial) -> AABB:
-	var mesh: MeshInstance = room.find_node("RoomMesh");
-	return mesh.get_aabb();
-
-func get_room_center(room: Spatial) -> Vector3:
-	var position = room.translation
-	var size = get_room_aabb(room).size
-	return Vector3(
-		position.x + (size.x / 2),
-		position.y + (size.y / 2),
-		position.z + (size.z / 2)
-	)
-
-func get_room_diagonal(room: Spatial) -> float:
-	var aabb = get_room_aabb(room)
-	return room.translation.distance_to(room.translation + aabb.end)
-
-func left_of(parent_room: Spatial, exit_position: Vector3) -> Vector3:
-	var aabb = get_room_aabb(parent_room)
-	var ofs = Vector3(exit_position.x, -FLOOR_HEIGHT, aabb.size.z)
-	return parent_room.translation + ofs
-
-func right_of(parent_room: Spatial, exit_position: Vector3) -> Vector3:
-	var aabb = get_room_aabb(parent_room)
-	var ofs = Vector3(aabb.size.x, -FLOOR_HEIGHT, exit_position.z)
-	return parent_room.translation + ofs
 
 func _on_exit_left(exit_position: Vector3):
 	var entrance_direction = EntranceDirection.RIGHT
