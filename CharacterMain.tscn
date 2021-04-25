@@ -1,7 +1,9 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://res/characterMedium.glb" type="PackedScene" id=1]
 [ext_resource path="res://res/texture/astroMaleA.png" type="Texture" id=2]
+[ext_resource path="res://scripts/Weapon.gd" type="Script" id=3]
+[ext_resource path="res://weapons/blasterJ.obj" type="ArrayMesh" id=4]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 2 )
@@ -1366,7 +1368,7 @@ input_10/name = "CrouchWalkShoot"
 input_10/auto_advance = false
 
 [sub_resource type="AnimationNodeBlendTree" id=24]
-graph_offset = Vector2( 0, 51.9997 )
+graph_offset = Vector2( -644.39, -217.366 )
 nodes/Blend2/node = SubResource( 8 )
 nodes/Blend2/position = Vector2( 186.667, 640 )
 "nodes/Blend2 2/node" = SubResource( 6 )
@@ -1404,12 +1406,31 @@ nodes/Shoot/position = Vector2( -226.667, 600 )
 nodes/Transition/node = SubResource( 23 )
 nodes/Transition/position = Vector2( 373.333, 40 )
 nodes/output/position = Vector2( 573.333, 40 )
-node_connections = [ "output", 0, "Transition", "Blend2 3", 0, "CrouchWalk 2", "Blend2 3", 1, "Shoot 4", "Blend2", 0, "Run 3", "Blend2", 1, "Shoot 2", "Blend2 2", 0, "CrouchIdle 2", "Blend2 2", 1, "Shoot 3", "Transition", 0, "Crouch 2", "Transition", 1, "CrouchIdle", "Transition", 2, "CrouchWalk", "Transition", 3, "Death", "Transition", 4, "Idle", "Transition", 5, "Interact", "Transition", 6, "Run", "Transition", 7, "Shoot", "Transition", 8, "Blend2", "Transition", 9, "Blend2 2", "Transition", 10, "Blend2 3" ]
+node_connections = [ "output", 0, "Transition", "Blend2", 0, "Run 3", "Blend2", 1, "Shoot 2", "Blend2 2", 0, "CrouchIdle 2", "Blend2 2", 1, "Shoot 3", "Blend2 3", 0, "CrouchWalk 2", "Blend2 3", 1, "Shoot 4", "Transition", 0, "Crouch 2", "Transition", 1, "CrouchIdle", "Transition", 2, "CrouchWalk", "Transition", 3, "Death", "Transition", 4, "Idle", "Transition", 5, "Interact", "Transition", 6, "Run", "Transition", 7, "Shoot", "Transition", 8, "Blend2", "Transition", 9, "Blend2 2", "Transition", 10, "Blend2 3" ]
 
 [node name="Character" instance=ExtResource( 1 )]
 
+[node name="Skeleton" parent="Root" index="0"]
+bones/31/bound_children = [ NodePath("RightHand") ]
+
 [node name="characterMedium" parent="Root/Skeleton" index="0"]
 material/0 = SubResource( 1 )
+
+[node name="RightHand" type="BoneAttachment" parent="Root/Skeleton" index="1"]
+transform = Transform( 0.0600635, -0.305513, -0.950302, -0.190099, -0.938091, 0.289571, -0.979926, 0.163255, -0.114421, -0.701662, 1.30166, 0.281901 )
+bone_name = "RightHand"
+
+[node name="Weapon" type="Spatial" parent="Root/Skeleton/RightHand" index="0"]
+transform = Transform( 0.105562, -1.91708, 0.560067, 0.394401, -0.529795, -1.88779, 1.95788, 0.210086, 0.350085, -0.323494, 0.483362, -0.0971344 )
+script = ExtResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Root/Skeleton/RightHand/Weapon" index="0"]
+transform = Transform( 1, 2.32831e-10, 0, 0, 1, -3.72529e-09, 3.72529e-09, 0, 1, 0, 0, 0 )
+mesh = ExtResource( 4 )
+material/0 = null
+material/1 = null
+material/2 = null
+material/3 = null
 
 [node name="AnimationPlayer" parent="." index="1"]
 autoplay = "Idle-loop"

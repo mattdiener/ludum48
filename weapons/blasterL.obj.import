@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/blasterL.obj-04e3ebf38d604c21483d12407e49d755.mesh"
+
+[deps]
+
+files=[ "res://.import/blasterL.obj-04e3ebf38d604c21483d12407e49d755.mesh" ]
+
+source_file="res://weapons/blasterL.obj"
+dest_files=[ "res://.import/blasterL.obj-04e3ebf38d604c21483d12407e49d755.mesh", "res://.import/blasterL.obj-04e3ebf38d604c21483d12407e49d755.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

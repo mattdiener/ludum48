@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/targetB.obj-03233afb45fe9571a5b523dd1a6525dc.mesh"
+
+[deps]
+
+files=[ "res://.import/targetB.obj-03233afb45fe9571a5b523dd1a6525dc.mesh" ]
+
+source_file="res://weapons/targetB.obj"
+dest_files=[ "res://.import/targetB.obj-03233afb45fe9571a5b523dd1a6525dc.mesh", "res://.import/targetB.obj-03233afb45fe9571a5b523dd1a6525dc.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

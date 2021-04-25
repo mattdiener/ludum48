@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/foamBulletB.obj-cab72cac41b2cfc6cc1b08fed613e10c.mesh"
+
+[deps]
+
+files=[ "res://.import/foamBulletB.obj-cab72cac41b2cfc6cc1b08fed613e10c.mesh" ]
+
+source_file="res://weapons/foamBulletB.obj"
+dest_files=[ "res://.import/foamBulletB.obj-cab72cac41b2cfc6cc1b08fed613e10c.mesh", "res://.import/foamBulletB.obj-cab72cac41b2cfc6cc1b08fed613e10c.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

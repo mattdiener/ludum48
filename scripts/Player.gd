@@ -22,6 +22,7 @@ onready var room_manager = get_node("../RoomManager")
 onready var tween = get_node("Tween")
 onready var character_animation = get_node("Character/Animation")
 onready var character = get_node("Character")
+onready var weapon = find_node("Weapon")
 
 enum PlayerAnimations {
 	CROUCH,
@@ -73,6 +74,12 @@ func get_input():
 	crouching = Input.is_action_pressed("crouch")
 	running = Input.is_action_pressed("run")
 
+	var pressing_shoot = Input.is_action_pressed("shoot")
+	if pressing_shoot:
+		weapon.begin_shoot()
+	else:
+		weapon.end_shoot()
+
 	var pressing_strafe = Input.is_action_pressed("strafe")
 	if not pressing_strafe:
 		strafing = false
@@ -98,16 +105,30 @@ func handle_crouch(delta):
 		enteringCrouch = true
 
 func derive_animation_state():
-	if crouching and enteringCrouch:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH)
-	elif crouching and not moving:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_IDLE)
-	elif crouching:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.CROUCH_WALK)
+	var animation = PlayerAnimations.IDLE
+
+	if crouching:
+		if enteringCrouch:
+			animation = PlayerAnimations.CROUCH
+		elif moving:
+			if weapon.shooting:
+				animation = PlayerAnimations.CROUCH_WALK
+			else:
+				animation = PlayerAnimations.CROUCH_WALK_SHOOT
+		else:
+			if weapon.shooting:
+				animation = PlayerAnimations.CROUCH_SHOOT
+			else:
+				animation = PlayerAnimations.CROUCH_IDLE
 	elif moving:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.RUN)
-	else:
-		character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
+		if weapon.shooting:
+			animation = PlayerAnimations.RUN_SHOOT
+		else:
+			animation = PlayerAnimations.RUN
+	elif weapon.shooting:
+		animation = PlayerAnimations.SHOOT
+
+	character_animation.set("parameters/Transition/current", animation)
 
 func move_to(position: Vector3):
 	player_has_control = false
