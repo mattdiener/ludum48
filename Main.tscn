@@ -45,7 +45,7 @@ shape = SubResource( 2 )
 [node name="RoomManager" type="Spatial" parent="."]
 script = ExtResource( 3 )
 
-[node name="LoadedRooms" type="Node" parent="RoomManager"]
+[node name="LoadedRooms" type="Spatial" parent="RoomManager"]
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( -0.743231, -0.133997, 0.655479, 0.541675, 0.45452, 0.707107, -0.392678, 0.8806, -0.26523, 0, 0, 0 )

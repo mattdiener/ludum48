@@ -36,18 +36,13 @@ enum PlayerAnimations {
 func get_input():
 	var tmp_direction = Vector3.ZERO
 
-	if Input.is_action_pressed("move_forward"):
-		tmp_direction.x -= 1
-		tmp_direction.z -= 1
-	if Input.is_action_pressed("move_backward"):
-		tmp_direction.x += 1
-		tmp_direction.z += 1
-	if Input.is_action_pressed("move_left"):
-		tmp_direction.x -= 1
-		tmp_direction.z += 1
-	if Input.is_action_pressed("move_right"):
-		tmp_direction.x += 1
-		tmp_direction.z -= 1
+	var forward = Input.get_action_strength("move_forward")
+	var backward = Input.get_action_strength("move_backward")
+	var left = Input.get_action_strength("move_left")
+	var right = Input.get_action_strength("move_right")
+
+	tmp_direction.x = backward + right - forward - left
+	tmp_direction.z = backward + left - forward - right
 
 	moving = false;
 	if tmp_direction.x != 0 or tmp_direction.z != 0:
@@ -111,13 +106,12 @@ func _physics_process(delta):
 		moving = true
 
 	var dir = ((transform.basis.z * direction.z) + (transform.basis.x * direction.x))
+	character.look_at(translation - dir, Vector3(0,1,0))
 
 	handle_crouch(delta)
 
 	var currentMoveSpeed = 0
 	if moving:
-		character.look_at(translation - dir, Vector3(0,1,0))
-
 		currentMoveSpeed = moveSpeed
 		if crouching:
 			currentMoveSpeed = crouchMoveSpeed
