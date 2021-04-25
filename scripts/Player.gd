@@ -4,7 +4,7 @@ var runMoveSpeed = 5.0
 var moveSpeed = 3.0
 var crouchMoveSpeed = 1.0
 var velocity = Vector3.ZERO
-var direction = Vector3.ZERO
+var direction = Vector3(1, 0, 1)
 var moving = false
 var enteringCrouch = false
 var crouching = false
@@ -13,6 +13,10 @@ var crouchFrames = 0
 var crouchTime = 0.416
 var running = false
 var player_has_control = true
+
+var strafing = false
+var forward_strafe_direction = Vector3.ZERO
+var side_strafe_direction = Vector3.ZERO
 
 onready var room_manager = get_node("../RoomManager")
 onready var tween = get_node("Tween")
@@ -46,11 +50,30 @@ func get_input():
 
 	moving = false;
 	if tmp_direction.x != 0 or tmp_direction.z != 0:
-		moving = true
-		direction = tmp_direction.normalized()
+		if strafing:
+			# When strafing, only allow front/back/left/right movement (WRT player)
+			var forward_strafe_sign = forward_strafe_direction.dot(tmp_direction)
+			var side_strafe_sign = side_strafe_direction.dot(tmp_direction)
+			if forward_strafe_sign or side_strafe_sign:
+				moving = true
+				direction = (
+					(forward_strafe_sign * forward_strafe_direction) +
+					(side_strafe_sign * side_strafe_direction)
+				)
+		else:
+			moving = true
+			direction = tmp_direction.normalized()
 
 	crouching = Input.is_action_pressed("crouch")
 	running = Input.is_action_pressed("run")
+
+	var pressing_strafe = Input.is_action_pressed("strafe")
+	if not pressing_strafe:
+		strafing = false
+	elif not strafing:
+		forward_strafe_direction = direction.normalized()
+		side_strafe_direction = forward_strafe_direction.cross(Vector3.UP)
+		strafing = true
 
 func handle_crouch(delta):
 	if not crouching:
@@ -82,6 +105,7 @@ func derive_animation_state():
 
 func move_to(position: Vector3):
 	player_has_control = false
+	strafing = false
 	direction = (position - translation).normalized()
 
 	tween.interpolate_property(
@@ -106,7 +130,15 @@ func _physics_process(delta):
 		moving = true
 
 	var dir = ((transform.basis.z * direction.z) + (transform.basis.x * direction.x))
-	character.look_at(translation - dir, Vector3(0,1,0))
+
+	if strafing:
+		var strafe_look_dir = (
+			(transform.basis.z * forward_strafe_direction.z) +
+			(transform.basis.x * forward_strafe_direction.x)
+		)
+		character.look_at(translation - strafe_look_dir, Vector3.UP)
+	else:
+		character.look_at(translation - dir, Vector3.UP)
 
 	handle_crouch(delta)
 

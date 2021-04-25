@@ -10,7 +10,7 @@ const MILITARY_MATERIALS = ["res://res/material/cyborg.tres", "res://res/materia
 const ROBOT_MATERIALS = ["res://res/material/robot.tres", "res://res/material/robot2.tres", "res://res/material/robot3.tres"]
 const ZOMBIE_MATERIALS = ["res://res/material/zombieA.tres", "res://res/material/zombieB.tres", "res://res/material/zombieC.tres"]
 
-const NPC_MATERIALS = [ 
+const NPC_MATERIALS = [
 	ALIEN_MATERIALS,
 	ANIMAL_MATERIALS,
 	MILITARY_MATERIALS,
@@ -19,13 +19,13 @@ const NPC_MATERIALS = [
 ]
 
 enum PlayerAnimations {
-	ATTACK, 
-	CROUCH, 
-	DEATH, 
-	IDLE, 
-	KICK, 
-	PUNCH, 
-	RUN, 
+	ATTACK,
+	CROUCH,
+	DEATH,
+	IDLE,
+	KICK,
+	PUNCH,
+	RUN,
 	SHOOT,
 	WALK,
 	PUNCH_WALK,
@@ -47,7 +47,7 @@ const distanceThreshold = 0.25
 #objects
 var navmesh = null
 var room = null
-var player = null 
+var player = null
 onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale")
 onready var character_animation = get_node("characterLargeMale/AnimationTree")
 onready var character = self
@@ -83,15 +83,15 @@ func _ready():
 	var material = ResourceLoader.load(material_res)
 	mesh["material/0"] = material
 	character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
-	
+
 	if room:
 		 navmesh = room.get_navmesh()
-	
+
 	if roomPath != null:
-		room = get_node(roomPath) 
-	
+		room = get_node(roomPath)
+
 	if playerPath != null:
-		player = get_node(playerPath) 
+		player = get_node(playerPath)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -113,7 +113,7 @@ func _process(delta):
 
 	var currentMoveSpeed = 0
 	if moving:
-		character.look_at(translation - direction, Vector3(0,1,0))
+		character.look_at(translation - direction, Vector3.UP)
 		currentMoveSpeed = walkSpeed
 		if running:
 			currentMoveSpeed = runSpeed
@@ -128,41 +128,41 @@ func _process(delta):
 		var room_coord = translation - room_offset
 		var new_room_coord = navmesh.get_closest_point(room_coord)
 		translation = new_room_coord + room_offset
-	
+
 	derive_animation_state()
 
 func near_destination():
 	var dist = translation.distance_to(destination.translation)
-	
+
 	if dist <= distanceThreshold:
 		return true
-	
+
 	return false
 
 func handle_patrol(delta):
 	moving = false
 	running = false
 	crouching = false
-	
+
 	if lastState != currentState:
 		enter_patrol()
 	lastState = currentState
-	
+
 	if destination == null:
 		exit_patrol()
 		return
-	
+
 	if near_destination():
 		exit_patrol()
 		return
-	
+
 	var tra = translation
 	var pra = player.translation
 	var rra = room.translation
-	
+
 	direction = navmesh.get_simple_path(translation, destination.translation - room.translation)[1] - translation
 	direction = direction.normalized()
-	direction = direction.rotated(Vector3(0,1,0), randf()*rotationThreshold*2 - rotationThreshold)
+	direction = direction.rotated(Vector3.UP, randf()*rotationThreshold*2 - rotationThreshold)
 	moving = true
 
 func enter_patrol():
@@ -173,7 +173,7 @@ func enter_patrol():
 			if tries >= 3:
 				destination = null
 				break
-			
+
 			var waypoints = room.get_waypoints()
 			destination = waypoints[randi() % waypoints.size()]
 			print(destination)
@@ -183,15 +183,15 @@ func exit_patrol():
 	print("EXIT PATROL")
 	var exit_states = [NPCState.Stand, NPCState.Patrol]
 	currentState = exit_states[randi() % exit_states.size()]
-	
+
 func handle_stand(delta):
 	if lastState != currentState:
 		enter_stand()
 	lastState = currentState
-	
+
 	if stateTimer >= stateMaxTime:
 		exit_stand()
-		
+
 	stateTimer += delta
 
 func enter_stand():
@@ -217,4 +217,4 @@ func derive_animation_state():
 		character_animation.set("parameters/Transition/current", PlayerAnimations.WALK)
 	else:
 		character_animation.set("parameters/Transition/current", PlayerAnimations.IDLE)
-	
+
