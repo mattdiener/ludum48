@@ -1,5 +1,7 @@
 extends KinematicBody
 
+var is_player = true
+
 var runMoveSpeed = 5.0
 var moveSpeed = 3.0
 var crouchMoveSpeed = 1.0
