@@ -24,6 +24,9 @@ func _on_player_death():
 	tween.start()
 
 func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3, _room_count):
+	if tween.is_active():
+		tween.stop()
+
 	if not prev_room:
 		# Initial room
 		size = initial_size
