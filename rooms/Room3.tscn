@@ -58,7 +58,7 @@ shape = SubResource( 2 )
 script = ExtResource( 2 )
 
 [node name="Shape" type="CollisionShape" parent="Exits/Exit_Left"]
-transform = Transform( 0.451861, 0, 0, 0, 1, 0, 0, 0, 1, 12.4499, 0.0101624, 8.77808 )
+transform = Transform( 0.451861, 0, 0, 0, 1, 0, 0, 0, 1, 12.4499, -0.164689, 8.77808 )
 shape = SubResource( 3 )
 
 [node name="Exit_Right" type="Area" parent="Exits"]
