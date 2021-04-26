@@ -5,10 +5,15 @@ onready var tween = get_node("Tween")
 
 var UNITS_PER_SCALE = 11
 
-var base_size;
+var initial_size
+var initial_translation
 
 func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3, _room_count):
-	if prev_room:
+	if not prev_room:
+		# Initial room
+		size = initial_size
+		translation = initial_translation
+	else:
 		# Focus on room
 		var prev_room_center = prev_room.get_center()
 		var room_center = Vector3(
@@ -30,7 +35,7 @@ func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vec
 		# Fit room in frame
 		var room_diagonal = room.get_diagonal_len()
 		var scale = max(floor(room_diagonal / UNITS_PER_SCALE), 1)
-		var new_size = base_size * scale
+		var new_size = initial_size * scale
 		tween.interpolate_property(
 			self,
 			"size",
@@ -44,5 +49,6 @@ func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vec
 		tween.start()
 
 func _ready():
-	base_size = size
+	initial_size = size
+	initial_translation = translation
 	room_manager.connect("room_entered", self, "_on_room_entered")

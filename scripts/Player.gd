@@ -4,7 +4,8 @@ signal player_health_change(new_hp)
 
 var is_player = true
 
-var hp = 100
+const STARTING_HP = 100
+var hp = STARTING_HP
 
 var runMoveSpeed = 5.0
 var moveSpeed = 3.0
@@ -181,6 +182,15 @@ func move_to(position: Vector3):
 		Tween.EASE_IN_OUT
 	)
 	tween.start()
+
+func _on_reset():
+	hp = STARTING_HP
+	velocity = Vector3.ZERO
+	direction = Vector3(1, 0, 1)
+	weapon.end_shoot()
+
+	player_has_control = true
+	emit_signal("player_health_change", hp)
 
 func _physics_process(delta):
 	moving = false

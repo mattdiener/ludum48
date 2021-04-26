@@ -2,6 +2,7 @@ extends Spatial
 
 const ROOMS_DIR = "res://rooms"
 
+signal reset_game()
 signal room_entered(prev_room, room, entrance_position, room_count)
 
 enum EntranceDirection {
@@ -21,6 +22,20 @@ var room_count = -1
 const ROOM_SPAWN_OFS = 10
 const ROOM_SPAWN_SECS = 0.5
 var room_spawn_tween = null
+
+var restart_held = false
+
+func reset():
+	for loaded_room in loaded_rooms.get_children():
+		loaded_room.queue_free()
+
+	active_room = null
+	room_count = -1
+	player.translation = Vector3.ZERO
+
+	var room0 = load_room(ROOMS_DIR + "/SpawnRoom.tscn")
+	next_room(room0, Vector3.ZERO)
+	emit_signal("reset_game")
 
 func get_active_navmesh():
 	if not active_room:
@@ -61,7 +76,7 @@ func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction 
 		# No preceding room (i.e., room 0)
 		room.translation = spawn_position
 
-	add_child_below_node(loaded_rooms, room)
+	loaded_rooms.add_child(room)
 	set_active_room(room, spawn_position + entrance_position)
 
 func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
@@ -134,5 +149,13 @@ func _ready():
 		if room_scene_file.find("Room") == 0:
 			room_scene_files.push_back(ROOMS_DIR + "/" + room_scene_file)
 
-	var room0 = load_room(ROOMS_DIR + "/SpawnRoom.tscn")
-	next_room(room0, Vector3.ZERO)
+	connect("reset_game", player, "_on_reset")
+	reset()
+
+func _process(_delta):
+	if Input.is_action_pressed("restart"):
+		if not restart_held:
+			restart_held = true
+			reset()
+	else:
+		restart_held = false
