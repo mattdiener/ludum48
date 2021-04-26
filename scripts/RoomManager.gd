@@ -13,7 +13,7 @@ enum EntranceDirection {
 
 onready var loaded_rooms = get_node("LoadedRooms")
 onready var player = get_node("../Player")
-onready var ui = get_node("../UI")
+onready var hud = get_node("../HUD")
 
 var active_room = null
 var room_scene_files = []
@@ -24,6 +24,7 @@ const ROOM_SPAWN_SECS = 0.5
 var room_spawn_tween = null
 
 var restart_held = false
+var pause_held = false
 
 func reset():
 	for loaded_room in loaded_rooms.get_children():
@@ -132,7 +133,7 @@ func _on_exit_right(exit_position: Vector3):
 func _ready():
 	randomize()
 
-	ui.init(player, self)
+	hud.init(player, self)
 
 	room_spawn_tween = Tween.new()
 	add_child(room_spawn_tween)
@@ -153,9 +154,18 @@ func _ready():
 	reset()
 
 func _process(_delta):
-	if Input.is_action_pressed("restart"):
-		if not restart_held:
-			restart_held = true
-			reset()
+	if Input.is_action_pressed("pause"):
+		if not pause_held:
+			pause_held = true
+			get_tree().paused = not get_tree().paused
 	else:
-		restart_held = false
+		pause_held = false
+
+
+	if not get_tree().paused:
+		if Input.is_action_pressed("restart"):
+			if not restart_held:
+				restart_held = true
+				reset()
+		else:
+			restart_held = false

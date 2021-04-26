@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://res/fonts/game_over_font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://scripts/PauseUI.gd" type="Script" id=2]
+
+[node name="PauseUI" type="MarginContainer"]
+pause_mode = 2
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -394.0
+margin_top = -150.0
+margin_right = 394.0
+margin_bottom = 150.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_right = 788.0
+margin_bottom = 300.0
+custom_fonts/font = ExtResource( 1 )
+text = "PAUSED"
