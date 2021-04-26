@@ -12,6 +12,7 @@ enum EntranceDirection {
 
 onready var loaded_rooms = get_node("LoadedRooms")
 onready var player = get_node("../Player")
+onready var ui = get_node("../UI")
 
 var active_room = null
 var room_scene_files = []
@@ -94,6 +95,8 @@ func _on_exit_right(exit_position: Vector3):
 
 func _ready():
 	randomize()
+
+	ui.init(player)
 
 	# Discover available rooms
 	var dir = Directory.new()
