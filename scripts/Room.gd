@@ -12,12 +12,14 @@ var light_tween = null
 var player = null
 var alert_npc_count = 0
 
+var difficulty = 0
 var covers = []
 var spawnpoints = []
 var waypoints = []
 
-func init(player):
+func init(player, difficulty):
 	self.player = player
+	self.difficulty = difficulty
 
 func _ready():
 	for exit in exits:
@@ -32,8 +34,7 @@ func _ready():
 		exit_lights.push_back(light)
 
 	traverseNodes(self)
-	addRandomNPC()
-	addRandomNPC()
+	add_npcs()
 
 	light_tween = Tween.new()
 	add_child(light_tween)
@@ -69,17 +70,37 @@ func fade_exit_light(target: float):
 		)
 	light_tween.start()
 
+func add_npcs():
+	var style = randi() % 5
+	var max_npcs = min(difficulty, spawnpoints.size())
+	if max_npcs == 0:
+		return
+	
+	var num_npcs = (randi() % max_npcs) + 1
+	var npc_difficulty = floor(difficulty / num_npcs)
+	var npc_remainder = difficulty % num_npcs
+	
+	var i = 0
+	while i < num_npcs:
+		if i < npc_remainder:
+			addNPC(style, npc_difficulty+1)
+		else:
+			addNPC(style, npc_difficulty)
+		i += 1
 
-func addRandomNPC():
+func addNPC(style, difficulty):
 	if len(spawnpoints) == 0:
 		print("No spawnpoints!")
 		return
-
-	var spawnpoint = spawnpoints[randi() % spawnpoints.size()]
+		
+	var idx = randi() % spawnpoints.size()
+	var spawnpoint = spawnpoints[idx]
+	spawnpoints[idx] = spawnpoints[spawnpoints.size()-1]
+	spawnpoints.remove((spawnpoints.size()-1))
+	
 	var npc_resource = load("res://NPC.tscn")
 	var npc = npc_resource.instance()
-
-	npc.init(0, self, player, randi() % 5)
+	npc.init(0, self, player, style)
 	npc.translation = spawnpoint.translation
 	npc.connect("npc_alert", self, "_on_npc_alert")
 	npc.connect("npc_unalert", self, "_on_npc_unalert")

@@ -15,6 +15,7 @@ onready var player = get_node("../Player")
 
 var active_room = null
 var room_scene_files = []
+var room_count = 0
 
 func get_active_navmesh():
 	if not active_room:
@@ -57,7 +58,8 @@ func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 func load_room(room_path: String):
 	var room_resource = load(room_path)
 	var inst = room_resource.instance()
-	inst.init(player)
+	inst.init(player, room_count)
+	room_count += 1
 	return inst
 
 func load_random_room(entrance_direction):
@@ -102,7 +104,8 @@ func _ready():
 		var room_scene_file = dir.get_next()
 		if not room_scene_file:
 			break
-		room_scene_files.push_back(ROOMS_DIR + "/" + room_scene_file)
+		if room_scene_file.find("Room") == 0:
+			room_scene_files.push_back(ROOMS_DIR + "/" + room_scene_file)
 
-	var room0 = load_room(room_scene_files[0])
+	var room0 = load_room(ROOMS_DIR + "/SpawnRoom.tscn")
 	next_room(room0, Vector3.ZERO)
