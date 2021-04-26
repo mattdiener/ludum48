@@ -1055,18 +1055,15 @@ nodes/InteractionTransition/position = Vector2( 466.667, 973.333 )
 nodes/MovementTransition/node = SubResource( 16 )
 nodes/MovementTransition/position = Vector2( 466.667, 653.333 )
 nodes/output/position = Vector2( 893.333, 826.667 )
-node_connections = [ "output", 0, "FinalBlend", "FinalBlend", 0, "MovementTransition", "FinalBlend", 1, "InteractionTransition", "InteractionTransition", 0, "Animation 8", "InteractionTransition", 1, "Animation 10", "MovementTransition", 0, "Animation", "MovementTransition", 1, "Animation 2", "MovementTransition", 2, "Animation 3", "MovementTransition", 3, "Animation 4", "MovementTransition", 4, "Animation 5", "MovementTransition", 5, "Animation 6", "MovementTransition", 6, "Animation 7", "MovementTransition", 7, "Animation 9" ]
+node_connections = [ "output", 0, "FinalBlend", "FinalBlend", 0, "MovementTransition", "FinalBlend", 1, "InteractionTransition", "MovementTransition", 0, "Animation", "MovementTransition", 1, "Animation 2", "MovementTransition", 2, "Animation 3", "MovementTransition", 3, "Animation 4", "MovementTransition", 4, "Animation 5", "MovementTransition", 5, "Animation 6", "MovementTransition", 6, "Animation 7", "MovementTransition", 7, "Animation 9", "InteractionTransition", 0, "Animation 8", "InteractionTransition", 1, "Animation 10" ]
 
 [node name="characterLargeMale" instance=ExtResource( 1 )]
-
-[node name="Skeleton" parent="Root" index="0"]
-bones/31/bound_children = [ NodePath("BoneAttachment") ]
 
 [node name="characterLargeMale" parent="Root/Skeleton" index="0"]
 material/0 = ExtResource( 3 )
 
 [node name="BoneAttachment" type="BoneAttachment" parent="Root/Skeleton" index="1"]
-transform = Transform( 0.0832208, -0.35876, -0.929722, -0.991955, 0.0594875, -0.11175, 0.0953967, 0.931534, -0.350919, -0.353972, 1.7721, 0.780804 )
+transform = Transform( 0.118527, -0.270307, -0.955459, -0.89791, -0.439989, 0.013086, -0.423924, 0.856355, -0.294859, -0.390225, 1.27658, 0.576399 )
 bone_name = "RightHand"
 
 [node name="Weapon" parent="Root/Skeleton/BoneAttachment" index="0" instance=ExtResource( 2 )]

@@ -1,5 +1,6 @@
 extends KinematicBody
 
+signal health_change(new_hp)
 signal npc_alert(npc)
 signal npc_unalert(npc)
 
@@ -71,8 +72,8 @@ var room = null
 var player = null
 onready var mesh = get_node("characterLargeMale/Root/Skeleton/characterLargeMale")
 onready var character_animation = get_node("characterLargeMale/AnimationTree")
+onready var health_bar = get_node("HealthMesh/HealthViewport/UI")
 onready var eye_position = get_node("EyePosition")
-onready var indicator = get_node("Indicator")
 onready var character = self
 onready var weapon = find_node("Weapon")
 onready var collision_shape = find_node("CollisionShape")
@@ -131,8 +132,8 @@ func _ready():
 
 	character.look_at(global_transform.origin + direction, Vector3(0,1,0))
 
-	indicator.hide()
 	weapon.bind_parent(self)
+	health_bar.init(self, 100)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -202,6 +203,9 @@ func is_alive():
 
 func take_damage(amount: float):
 	hp -= amount
+	hp = max(hp, 0)
+	
+	emit_signal("health_change", hp)
 
 	if hp <= 0:
 		collision_shape.disabled = true
@@ -274,10 +278,8 @@ func react_to_player(delta):
 		detected = true
 
 	if detected:
-		indicator.show()
 		detectedTime += delta
 	else:
-		indicator.hide()
 		detectedTime = 0
 
 	if detectedTime >= detectedMaxTime:
@@ -621,7 +623,6 @@ func exit_alert():
 	currentState = exit_states[randi() % exit_states.size()]
 	alerted = false
 	stateTimer = 0
-	indicator.hide()
 
 func derive_animation_state():
 	var move_animation = PlayerMovementAnimations.IDLE
@@ -663,6 +664,5 @@ func disable():
 	crouching = false
 	punching = false
 	kicking = false
-	indicator.hide()
 	weapon.end_shoot()
 	currentState = NPCState.None

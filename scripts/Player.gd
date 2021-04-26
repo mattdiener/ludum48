@@ -13,6 +13,8 @@ var moveSpeed = 3.0
 var crouchMoveSpeed = 1.0
 var velocity = Vector3.ZERO
 var direction = Vector3(1, 0, 1)
+var shootDirection = Vector3.ZERO
+var isDirectionalShooting = false
 var moving = false
 var enteringCrouch = false
 var crouching = false
@@ -61,14 +63,25 @@ func is_crouching():
 
 func get_input():
 	var tmp_direction = Vector3.ZERO
+	shootDirection = Vector3.ZERO
 
 	var forward = Input.get_action_strength("move_forward")
 	var backward = Input.get_action_strength("move_backward")
 	var left = Input.get_action_strength("move_left")
 	var right = Input.get_action_strength("move_right")
 
+	var shootForward = Input.get_action_strength("shoot_forward")
+	var shootBackward = Input.get_action_strength("shoot_backward")
+	var shootLeft = Input.get_action_strength("shoot_left")
+	var shootRight = Input.get_action_strength("shoot_right")
+
 	tmp_direction.x = backward + right - forward - left
 	tmp_direction.z = backward + left - forward - right
+	
+	shootDirection.x = shootBackward + shootRight - shootForward - shootLeft
+	shootDirection.z = shootLeft + shootBackward - shootRight - shootForward
+	shootDirection = shootDirection.normalized()
+	isDirectionalShooting = shootDirection.x != 0 or shootDirection.z != 0
 
 	moving = false;
 	if tmp_direction.x != 0 or tmp_direction.z != 0:
@@ -90,18 +103,24 @@ func get_input():
 	running = Input.is_action_pressed("run")
 
 	var pressing_shoot = Input.is_action_pressed("shoot")
-	if pressing_shoot:
+	if pressing_shoot or isDirectionalShooting:
 		weapon.begin_shoot()
 	else:
 		weapon.end_shoot()
 
 	var pressing_strafe = Input.is_action_pressed("strafe")
-	if not pressing_strafe:
+	if not pressing_strafe and not isDirectionalShooting:
 		strafing = false
 	elif not strafing:
-		forward_strafe_direction = direction.normalized()
-		side_strafe_direction = forward_strafe_direction.cross(Vector3.UP)
 		strafing = true
+		if not isDirectionalShooting:
+			forward_strafe_direction = direction.normalized()
+			side_strafe_direction = forward_strafe_direction.cross(Vector3.UP)
+			
+	
+	if isDirectionalShooting:
+		forward_strafe_direction = shootDirection.normalized()
+		side_strafe_direction = forward_strafe_direction.cross(Vector3.UP)
 
 func handle_crouch(delta):
 	if not crouching:
@@ -151,7 +170,9 @@ func derive_animation_state():
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
 func get_look_direction():
-	if strafing:
+	if isDirectionalShooting:
+		return shootDirection.normalized()
+	elif strafing:
 		return forward_strafe_direction.normalized()
 	return direction.normalized()
 

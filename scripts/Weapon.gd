@@ -5,6 +5,7 @@ onready var shoot_timer = get_node("ShootTimer")
 # Whether the trigger is held
 var shooting = false
 var parent = null
+var isAuto = true
 
 func begin_shoot():
 	# Don't trigger another shot if the trigger is held
@@ -28,6 +29,9 @@ func _on_fire_projectile():
 		get_tree().get_root().add_child(projectile)
 	else:
 		projectile.queue_free()
+	
+	if isAuto:
+		shoot_timer.start()
 
 func bind_parent(parent):
 	self.parent = parent
