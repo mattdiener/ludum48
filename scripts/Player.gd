@@ -2,6 +2,7 @@ extends KinematicBody
 
 signal player_health_change(new_hp)
 signal player_death()
+signal player_begin()
 
 var is_player = true
 
@@ -23,6 +24,7 @@ var crouchFrames = 0
 var crouchTime = 0.416
 var running = false
 var player_has_control = true
+var main_menu_state = true
 
 var strafing = false
 var forward_strafe_direction = Vector3.ZERO
@@ -60,6 +62,10 @@ func is_moving():
 
 func is_crouching():
 	return crouching
+
+func get_space_input():
+	if Input.is_action_pressed("ui_accept"):
+		emit_signal("player_begin")
 
 func get_input():
 	var tmp_direction = Vector3.ZERO
@@ -211,16 +217,20 @@ func _on_reset():
 	velocity = Vector3.ZERO
 	direction = Vector3(1, 0, 1)
 	weapon.end_shoot()
-
 	player_has_control = true
 	emit_signal("player_health_change", hp)
+	
+func gain_control():
+	main_menu_state = false
 
 func _physics_process(delta):
 	moving = false
 	crouching = false
 	running = false
 
-	if player_has_control:
+	if main_menu_state:
+		get_space_input()
+	elif player_has_control:
 		get_input()
 	else:
 		moving = true
