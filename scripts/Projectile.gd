@@ -19,7 +19,7 @@ func _physics_process(delta):
 func _ready():
 	start_position = translation
 
-func _on_Area_body_entered(body):
-	if body.has_method("take_damage"):
-		body.take_damage(DAMAGE)
+func _on_entered(node):
+	if node.has_method("take_damage"):
+		node.take_damage(DAMAGE)
 	queue_free()
