@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://res/ui/health_container.png" type="Texture" id=1]
 [ext_resource path="res://res/ui/health_progress.png" type="Texture" id=2]
 [ext_resource path="res://scripts/UI.gd" type="Script" id=3]
+[ext_resource path="res://res/ui/glassPanel.png" type="Texture" id=4]
+[ext_resource path="res://res/fonts/room_title_font.tres" type="DynamicFont" id=5]
+[ext_resource path="res://res/fonts/room_count_font.tres" type="DynamicFont" id=6]
 
 [node name="UI" type="MarginContainer"]
 anchor_right = 1.0
@@ -19,17 +22,61 @@ __meta__ = {
 margin_left = 20.0
 margin_top = 20.0
 margin_right = 1580.0
-margin_bottom = 70.0
+margin_bottom = 220.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 500.0
-margin_bottom = 50.0
+margin_right = 1356.0
+margin_bottom = 200.0
+size_flags_horizontal = 3
 
 [node name="HealthBar" type="TextureProgress" parent="HBoxContainer/VBoxContainer"]
-margin_right = 500.0
+margin_right = 1356.0
 margin_bottom = 50.0
 value = 100.0
 texture_under = ExtResource( 1 )
 texture_progress = ExtResource( 2 )
 
 [node name="Tween" type="Tween" parent="HBoxContainer/VBoxContainer/HealthBar"]
+
+[node name="RoomCounter" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 1360.0
+margin_right = 1560.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 200, 200 )
+
+[node name="Background" type="NinePatchRect" parent="HBoxContainer/RoomCounter"]
+margin_right = 200.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 200, 200 )
+texture = ExtResource( 4 )
+
+[node name="Title" type="Label" parent="HBoxContainer/RoomCounter/Background"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -100.0
+margin_top = 15.0
+margin_right = 100.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 200, 10 )
+custom_fonts/font = ExtResource( 5 )
+text = "DEPTH"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RoomCountLabel" type="Label" parent="HBoxContainer/RoomCounter/Background"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -100.0
+margin_top = 30.0
+margin_right = 100.0
+margin_bottom = 95.0
+rect_min_size = Vector2( 200, 10 )
+custom_fonts/font = ExtResource( 6 )
+text = "0
+"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

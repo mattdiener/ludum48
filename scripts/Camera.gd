@@ -7,7 +7,7 @@ var UNITS_PER_SCALE = 11
 
 var base_size;
 
-func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3):
+func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3, _room_count):
 	if prev_room:
 		# Focus on room
 		var prev_room_center = prev_room.get_center()

@@ -2,7 +2,7 @@ extends Spatial
 
 const ROOMS_DIR = "res://rooms"
 
-signal room_entered(prev_room, room, entrance_position)
+signal room_entered(prev_room, room, entrance_position, room_count)
 
 enum EntranceDirection {
 	NONE,
@@ -16,7 +16,7 @@ onready var ui = get_node("../UI")
 
 var active_room = null
 var room_scene_files = []
-var room_count = 0
+var room_count = -1
 
 func get_active_navmesh():
 	if not active_room:
@@ -46,6 +46,7 @@ func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction 
 
 func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 	if active_room:
+		active_room.disable()
 		for exit in active_room.get_node("Exits").get_children():
 			exit.queue_free()
 
@@ -53,14 +54,14 @@ func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 		exit.connect("exited_left", self, "_on_exit_left")
 		exit.connect("exited_right", self, "_on_exit_right")
 
-	emit_signal("room_entered", active_room, new_active_room, entrance_position)
+	room_count += 1
+	emit_signal("room_entered", active_room, new_active_room, entrance_position, room_count)
 	active_room = new_active_room
 
 func load_room(room_path: String):
 	var room_resource = load(room_path)
 	var inst = room_resource.instance()
 	inst.init(player, room_count)
-	room_count += 1
 	return inst
 
 func load_random_room(entrance_direction):
@@ -96,7 +97,7 @@ func _on_exit_right(exit_position: Vector3):
 func _ready():
 	randomize()
 
-	ui.init(player)
+	ui.init(player, self)
 
 	# Discover available rooms
 	var dir = Directory.new()

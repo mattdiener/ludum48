@@ -228,7 +228,7 @@ func _physics_process(delta):
 
 	derive_animation_state()
 
-func _on_room_entered(prev_room: Spatial, room: Spatial, entrance_position: Vector3):
+func _on_room_entered(prev_room: Spatial, room: Spatial, entrance_position: Vector3, _room_count):
 	if prev_room:
 		move_to(entrance_position)
 

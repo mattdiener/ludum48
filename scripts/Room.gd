@@ -176,6 +176,6 @@ func right_of(exit_position: Vector3) -> Vector3:
 
 func disable():
 	# Prevents trying to fade non-existent lights
-	exit_lights = []
+	exit_lights.clear()
 	for npc in npcs:
 		npc.disable()

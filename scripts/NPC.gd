@@ -657,4 +657,11 @@ func derive_animation_state():
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
 
 func disable():
+	alerted = false
+	moving = false
+	running = false
+	crouching = false
+	punching = false
+	kicking = false
+	weapon.end_shoot()
 	currentState = NPCState.None
