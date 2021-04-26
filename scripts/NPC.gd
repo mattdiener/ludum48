@@ -136,7 +136,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	if is_alive():
+	if is_alive() and currentState != NPCState.None:
 		# Do different control based on state
 		if currentState == NPCState.Patrol:
 			handle_patrol(delta)
@@ -655,3 +655,6 @@ func derive_animation_state():
 	if interact_animation != PlayerInteractionAnimations.IDLE:
 		blend = 1
 	character_animation.set("parameters/FinalBlend/blend_amount", blend)
+
+func disable():
+	currentState = NPCState.None

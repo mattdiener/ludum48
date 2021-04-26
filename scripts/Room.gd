@@ -16,6 +16,7 @@ var difficulty = 0
 var covers = []
 var spawnpoints = []
 var waypoints = []
+var npcs = []
 
 func init(player, difficulty):
 	self.player = player
@@ -75,11 +76,11 @@ func add_npcs():
 	var max_npcs = min(difficulty, spawnpoints.size())
 	if max_npcs == 0:
 		return
-	
+
 	var num_npcs = (randi() % max_npcs) + 1
 	var npc_difficulty = floor(difficulty / num_npcs)
 	var npc_remainder = difficulty % num_npcs
-	
+
 	var i = 0
 	while i < num_npcs:
 		if i < npc_remainder:
@@ -92,12 +93,12 @@ func addNPC(style, difficulty):
 	if len(spawnpoints) == 0:
 		print("No spawnpoints!")
 		return
-		
+
 	var idx = randi() % spawnpoints.size()
 	var spawnpoint = spawnpoints[idx]
 	spawnpoints[idx] = spawnpoints[spawnpoints.size()-1]
 	spawnpoints.remove((spawnpoints.size()-1))
-	
+
 	var npc_resource = load("res://NPC.tscn")
 	var npc = npc_resource.instance()
 	npc.init(0, self, player, style)
@@ -106,6 +107,7 @@ func addNPC(style, difficulty):
 	npc.connect("npc_unalert", self, "_on_npc_unalert")
 
 	add_child(npc)
+	npcs.push_back(npc)
 
 func traverseNodes(node):
 	var nodeClass = node.get_class()
@@ -171,3 +173,9 @@ func right_of(exit_position: Vector3) -> Vector3:
 	var aabb = get_aabb()
 	var ofs = Vector3(aabb.size.x, -FLOOR_HEIGHT, exit_position.z)
 	return translation + ofs
+
+func disable():
+	# Prevents trying to fade non-existent lights
+	exit_lights = []
+	for npc in npcs:
+		npc.disable()
