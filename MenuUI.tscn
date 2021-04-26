@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://res/fonts/room_title_font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://res/fonts/game_over_font.tres" type="DynamicFont" id=2]
+[ext_resource path="res://res/fonts/room_count_font.tres" type="DynamicFont" id=3]
+
+[node name="MenuUI" type="MarginContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -725.5
+margin_top = -272.0
+margin_right = 725.5
+margin_bottom = 272.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 1451.0
+margin_bottom = 544.0
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+margin_right = 1451.0
+margin_bottom = 300.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 2 )
+text = "DEEP SBASS"
+align = 1
+
+[node name="Creators" type="Label" parent="VBoxContainer"]
+margin_top = 304.0
+margin_right = 1451.0
+margin_bottom = 364.0
+size_flags_vertical = 5
+custom_fonts/font = ExtResource( 1 )
+text = "MADE BY MATTx2 FOR LD48"
+align = 1
+
+[node name="Prompt" type="Label" parent="VBoxContainer"]
+margin_top = 368.0
+margin_right = 1451.0
+margin_bottom = 544.0
+size_flags_vertical = 1
+custom_fonts/font = ExtResource( 3 )
+text = "PRESS 'SBASS' TO BEGIN"
+align = 1

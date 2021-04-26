@@ -14,10 +14,12 @@ enum EntranceDirection {
 onready var loaded_rooms = get_node("LoadedRooms")
 onready var player = get_node("../Player")
 onready var hud = get_node("../HUD")
+onready var menu = get_node("../MenuUI")
 
 var active_room = null
 var room_scene_files = []
 var room_count = -1
+var game_started = false
 
 const ROOM_SPAWN_OFS = 10
 const ROOM_SPAWN_SECS = 0.5
@@ -151,16 +153,24 @@ func _ready():
 			room_scene_files.push_back(ROOMS_DIR + "/" + room_scene_file)
 
 	connect("reset_game", player, "_on_reset")
+	player.connect("player_begin", self, "_on_player_begin")
 	reset()
 
+func _on_player_begin():
+	pause_held = true
+	game_started = true
+	menu.hide()
+
 func _process(_delta):
+	if not game_started:
+		return
+
 	if Input.is_action_pressed("pause"):
 		if not pause_held:
 			pause_held = true
 			get_tree().paused = not get_tree().paused
 	else:
 		pause_held = false
-
 
 	if not get_tree().paused:
 		if Input.is_action_pressed("restart"):
