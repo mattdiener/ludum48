@@ -1,5 +1,6 @@
 extends Camera
 
+onready var player = get_node("../Player")
 onready var room_manager = get_node("../RoomManager")
 onready var tween = get_node("Tween")
 
@@ -7,6 +8,20 @@ var UNITS_PER_SCALE = 11
 
 var initial_size
 var initial_translation
+
+func _on_player_death():
+	# Dramatic, deep zoom out
+	var new_size = size * 5
+	tween.interpolate_property(
+		self,
+		"size",
+		size,
+		new_size,
+		30,
+		Tween.TRANS_LINEAR,
+		Tween.EASE_IN_OUT
+	)
+	tween.start()
 
 func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vector3, _room_count):
 	if not prev_room:
@@ -51,4 +66,6 @@ func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vec
 func _ready():
 	initial_size = size
 	initial_translation = translation
+
+	player.connect("player_death", self, "_on_player_death")
 	room_manager.connect("room_entered", self, "_on_room_entered")

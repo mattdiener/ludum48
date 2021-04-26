@@ -1,6 +1,7 @@
 extends KinematicBody
 
 signal player_health_change(new_hp)
+signal player_death()
 
 var is_player = true
 
@@ -163,6 +164,7 @@ func take_damage(amount: float):
 	if hp <= 0:
 		player_has_control = false
 		emit_signal("player_health_change", 0)
+		emit_signal("player_death")
 	else:
 		emit_signal("player_health_change", hp)
 
