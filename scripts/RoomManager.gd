@@ -18,6 +18,10 @@ var active_room = null
 var room_scene_files = []
 var room_count = -1
 
+const ROOM_SPAWN_OFS = 10
+const ROOM_SPAWN_SECS = 0.5
+var room_spawn_tween = null
+
 func get_active_navmesh():
 	if not active_room:
 		return null
@@ -40,9 +44,25 @@ func next_room(room: Spatial, parent_exit_position: Vector3, entrance_direction 
 		entrance_position = room.get_node(entrance_node_name).translation
 		spawn_position -= entrance_position
 
-	room.translation = spawn_position
+		# Move room up from below
+		room.translation = spawn_position
+		room.translation.y -= ROOM_SPAWN_OFS
+		room_spawn_tween.interpolate_property(
+			room,
+			"translation",
+			room.translation,
+			spawn_position,
+			ROOM_SPAWN_SECS,
+			Tween.TRANS_LINEAR,
+			Tween.EASE_IN_OUT
+		)
+		room_spawn_tween.start()
+	else:
+		# No preceding room (i.e., room 0)
+		room.translation = spawn_position
+
 	add_child_below_node(loaded_rooms, room)
-	set_active_room(room, room.translation + entrance_position)
+	set_active_room(room, spawn_position + entrance_position)
 
 func set_active_room(new_active_room: Spatial, entrance_position: Vector3):
 	if active_room:
@@ -98,6 +118,9 @@ func _ready():
 	randomize()
 
 	ui.init(player, self)
+
+	room_spawn_tween = Tween.new()
+	add_child(room_spawn_tween)
 
 	# Discover available rooms
 	var dir = Directory.new()

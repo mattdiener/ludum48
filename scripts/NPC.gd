@@ -663,5 +663,6 @@ func disable():
 	crouching = false
 	punching = false
 	kicking = false
+	indicator.hide()
 	weapon.end_shoot()
 	currentState = NPCState.None

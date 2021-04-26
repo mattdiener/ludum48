@@ -11,7 +11,11 @@ func _on_room_entered(prev_room: Spatial, room: Spatial, _entrance_position: Vec
 	if prev_room:
 		# Focus on room
 		var prev_room_center = prev_room.get_center()
-		var room_center = room.get_center()
+		var room_center = Vector3(
+			0,
+			room_manager.ROOM_SPAWN_OFS,  # Account for rise up from floor
+			0
+		) + room.get_center()
 		var cam_dest = translation - (prev_room_center - room_center)
 		tween.interpolate_property(
 			self,
