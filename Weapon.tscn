@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/Weapon.gd" type="Script" id=1]
-[ext_resource path="res://weapons/blasterJ.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://res/weapons/blasterJ.obj" type="ArrayMesh" id=2]
 
 [node name="Weapon" type="Spatial"]
 transform = Transform( -8.74228e-08, -2, 0, 0.68404, -2.99003e-08, -1.87939, 1.87939, -8.21505e-08, 0.68404, -0.235154, 0.513781, -0.201425 )
