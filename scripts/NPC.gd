@@ -1,5 +1,8 @@
 extends KinematicBody
 
+signal npc_alert(npc)
+signal npc_unalert(npc)
+
 enum Type { Patrol, Boss, Idle }
 enum Style { Alien, Animal, Military, Robot, Zombie }
 enum NPCState { None, Patrol, Stand, Chase, SeekCover, Cover, StandCover, Punch, Kick, Strafe, Alert }
@@ -72,6 +75,7 @@ onready var eye_position = get_node("EyePosition")
 onready var indicator = get_node("Indicator")
 onready var character = self
 onready var weapon = find_node("Weapon")
+onready var collision_shape = find_node("CollisionShape")
 
 #Movement
 var currentState : int = NPCState.Stand
@@ -132,29 +136,29 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	# Do different control based on state
-	if currentState == NPCState.Patrol:
-		handle_patrol(delta)
-	elif currentState == NPCState.Stand:
-		handle_stand(delta)
-	elif currentState == NPCState.Chase:
-		handle_chase(delta)
-	elif currentState == NPCState.SeekCover:
-		handle_seek_cover(delta)
-	elif currentState == NPCState.Cover:
-		handle_cover(delta)
-	elif currentState == NPCState.StandCover:
-		handle_stand_cover(delta)
-	elif currentState == NPCState.Punch:
-		handle_punch(delta)
-	elif currentState == NPCState.Kick:
-		handle_kick(delta)
-	elif currentState == NPCState.Strafe:
-		handle_strafe(delta)
-	elif currentState == NPCState.Alert:
-		handle_alert(delta)
-
 	if is_alive():
+		# Do different control based on state
+		if currentState == NPCState.Patrol:
+			handle_patrol(delta)
+		elif currentState == NPCState.Stand:
+			handle_stand(delta)
+		elif currentState == NPCState.Chase:
+			handle_chase(delta)
+		elif currentState == NPCState.SeekCover:
+			handle_seek_cover(delta)
+		elif currentState == NPCState.Cover:
+			handle_cover(delta)
+		elif currentState == NPCState.StandCover:
+			handle_stand_cover(delta)
+		elif currentState == NPCState.Punch:
+			handle_punch(delta)
+		elif currentState == NPCState.Kick:
+			handle_kick(delta)
+		elif currentState == NPCState.Strafe:
+			handle_strafe(delta)
+		elif currentState == NPCState.Alert:
+			handle_alert(delta)
+
 		if strafing and not punching and not kicking:
 			var can_see = can_see_player()
 			if (can_see and not sawPlayer):
@@ -184,8 +188,9 @@ func _physics_process(delta):
 		if navmesh:
 			translation = navmesh.get_closest_point(translation)
 
+		prev_hp = hp
+
 	derive_animation_state()
-	prev_hp = hp
 
 func get_look_direction():
 	if strafing:
@@ -199,7 +204,8 @@ func take_damage(amount: float):
 	hp -= amount
 
 	if hp <= 0:
-		currentState = NPCState.None
+		collision_shape.disabled = true
+		emit_signal("npc_unalert", self)
 
 func can_see_player():
 	# first find out if player is in fov
@@ -608,12 +614,14 @@ func enter_alert():
 	stateTimer = 0
 	stateMaxTime = alertTime
 	alerted = true
+	emit_signal("npc_alert", self)
 
 func exit_alert():
 	var exit_states = [NPCState.Chase, NPCState.Strafe, NPCState.SeekCover]
 	currentState = exit_states[randi() % exit_states.size()]
 	alerted = false
 	stateTimer = 0
+	indicator.hide()
 
 func derive_animation_state():
 	var move_animation = PlayerMovementAnimations.IDLE

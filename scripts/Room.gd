@@ -1,8 +1,16 @@
 extends Spatial
 
 const FLOOR_HEIGHT = 0.75
+const EXIT_LIGHT_RANGE = 1.25
+const EXIT_LIGHT_ENERGY = 2
+const EXIT_LIGHT_COLOR = Color(255, 0, 0)
+
+onready var exits = get_node("Exits").get_children()
+var exit_lights = []
+var light_tween = null
 
 var player = null
+var alert_npc_count = 0
 
 var covers = []
 var spawnpoints = []
@@ -12,28 +20,75 @@ func init(player):
 	self.player = player
 
 func _ready():
+	for exit in exits:
+		var exit_shape = exit.get_node("Shape")
+
+		var light = OmniLight.new()
+		light.omni_range = 0
+		light.light_energy = EXIT_LIGHT_ENERGY
+		light.light_color = EXIT_LIGHT_COLOR
+
+		exit_shape.add_child(light)
+		exit_lights.push_back(light)
+
 	traverseNodes(self)
 	addRandomNPC()
 	addRandomNPC()
 
+	light_tween = Tween.new()
+	add_child(light_tween)
+
 func _process(delta):
 	pass
+
+func is_alert():
+	return alert_npc_count > 0
+
+func _on_npc_alert(_npc):
+	if not is_alert():
+		fade_exit_light(EXIT_LIGHT_RANGE)
+
+	alert_npc_count += 1
+
+func _on_npc_unalert(_npc):
+	alert_npc_count -= 1
+
+	if not is_alert():
+		fade_exit_light(0)
+
+func fade_exit_light(target: float):
+	for light in exit_lights:
+		light_tween.interpolate_property(
+			light,
+			"omni_range",
+			light.omni_range,
+			target,
+			1,
+			Tween.TRANS_LINEAR,
+			Tween.EASE_IN_OUT
+		)
+	light_tween.start()
+
 
 func addRandomNPC():
 	if len(spawnpoints) == 0:
 		print("No spawnpoints!")
 		return
-		
+
 	var spawnpoint = spawnpoints[randi() % spawnpoints.size()]
 	var npc_resource = load("res://NPC.tscn")
 	var npc = npc_resource.instance()
+
 	npc.init(0, self, player, randi() % 5)
 	npc.translation = spawnpoint.translation
+	npc.connect("npc_alert", self, "_on_npc_alert")
+	npc.connect("npc_unalert", self, "_on_npc_unalert")
+
 	add_child(npc)
 
 func traverseNodes(node):
 	var nodeClass = node.get_class()
-	
+
 	if "type" in node:
 		if node.type == "Spawnpoint":
 			add_spawnpoint(node)
@@ -41,10 +96,10 @@ func traverseNodes(node):
 			add_waypoint(node)
 		if node.type == "Cover":
 			add_cover(node)
-	
+
 	if node.get_child_count() == 0:
 		return
-	
+
 	for N in node.get_children():
 		traverseNodes(N)
 
@@ -56,16 +111,16 @@ func add_spawnpoint(waypoint):
 
 func add_waypoint(waypoint):
 	waypoints.append(waypoint)
-	
+
 func add_cover(cover):
 	covers.append(cover)
 
 func get_spawnpoints():
 	return spawnpoints
-	
+
 func get_waypoints():
 	return waypoints
-	
+
 func get_covers():
 	return covers
 

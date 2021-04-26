@@ -79,14 +79,16 @@ func load_random_room(entrance_direction):
 			room_scene.queue_free()
 
 func _on_exit_left(exit_position: Vector3):
-	var entrance_direction = EntranceDirection.RIGHT
-	var room = load_random_room(entrance_direction)
-	next_room(room, exit_position, entrance_direction)
+	if not active_room.is_alert():
+		var entrance_direction = EntranceDirection.RIGHT
+		var room = load_random_room(entrance_direction)
+		next_room(room, exit_position, entrance_direction)
 
 func _on_exit_right(exit_position: Vector3):
-	var entrance_direction = EntranceDirection.LEFT
-	var room = load_random_room(entrance_direction)
-	next_room(room, exit_position, entrance_direction)
+	if not active_room.is_alert():
+		var entrance_direction = EntranceDirection.LEFT
+		var room = load_random_room(entrance_direction)
+		next_room(room, exit_position, entrance_direction)
 
 func _ready():
 	randomize()
