@@ -159,6 +159,8 @@ func derive_animation_state():
 				move_animation = PlayerMovementAnimations.CROUCH
 			elif moving:
 				move_animation = PlayerMovementAnimations.CROUCH_WALK
+			else:
+				move_animation = PlayerMovementAnimations.CROUCH_IDLE
 		elif moving:
 			move_animation = PlayerMovementAnimations.RUN
 
