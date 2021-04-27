@@ -160,6 +160,7 @@ func _on_player_begin():
 	pause_held = true
 	game_started = true
 	menu.hide()
+	hud.show()
 
 func _process(_delta):
 	if not game_started:
