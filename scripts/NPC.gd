@@ -209,6 +209,7 @@ func take_damage(amount: float):
 
 	if hp <= 0:
 		collision_shape.disabled = true
+		weapon.end_shoot()
 		emit_signal("npc_unalert", self)
 
 func can_see_player():
